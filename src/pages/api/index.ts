@@ -20,6 +20,9 @@ export default async function handler(
 	if (!path) return res.status(404).end();
 	try {
 		middleware(req, res);
+		console.info(
+			(process.env.BACKEND_URL || 'http://localhost:8080') + '/v1/api' + path
+		);
 		const response = await axios[method](
 			(process.env.BACKEND_URL || 'http://localhost:8080') + '/v1/api' + path,
 			!req.body ? {} : decodeBody(req.body),
@@ -29,6 +32,7 @@ export default async function handler(
 				},
 			}
 		);
+		console.info(response);
 		return res.status(response.status).json(encodeBody({ ...response.data }));
 	} catch (err) {
 		console.error(err);
