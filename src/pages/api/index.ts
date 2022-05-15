@@ -11,14 +11,14 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const { path } = req.headers as HeaderProps;
-	const method = (req.method?.toLowerCase() || 'get') as unknown as
-		| 'get'
-		| 'post'
-		| 'put'
-		| 'delete';
-	if (!path) return res.status(404).end();
 	try {
+		const { path } = req.headers as HeaderProps;
+		const method = (req.method?.toLowerCase() || 'get') as unknown as
+			| 'get'
+			| 'post'
+			| 'put'
+			| 'delete';
+		if (!path) return res.status(404).end();
 		middleware(req, res);
 		console.info(
 			(process.env.BACKEND_URL || 'http://localhost:8080') + '/v1/api' + path
