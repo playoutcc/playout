@@ -95,11 +95,14 @@ export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 					{menu && isSelf && (
 						<Menu>
 							<MenuButton style={{ cursor: 'pointer' }} as="div">
-								<Button backgroundColor="gray.900">
+								<Button
+									aria-label="Opções da experiência"
+									backgroundColor="gray.900"
+								>
 									<BiDotsHorizontal cursor="pointer" color="white" size={20} />
 								</Button>
 							</MenuButton>
-							<MenuList as="ul">
+							<MenuList cursor="pointer" as="ul">
 								<MenuItem as="li" onClick={setOpenExperience}>
 									Editar
 								</MenuItem>

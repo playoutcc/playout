@@ -69,7 +69,7 @@ const Users: NextPage<Props> = ({ result, username }) => {
 				{users?.length === 0 && <Text>Não há nenhum resultado.</Text>}
 				{users?.length !== 0 && (
 					<Fragment>
-						<VStack divider={<StackDivider />} gap={6}>
+						<VStack divider={<StackDivider />} w="100%" maxW="600px" gap={6}>
 							{users?.map((user) => {
 								return <CardUser key={user.email} user={user} />;
 							})}

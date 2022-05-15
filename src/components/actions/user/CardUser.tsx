@@ -9,11 +9,14 @@ type Props = {
 export const CardUser: FC<Props> = ({ user }) => {
 	return (
 		<HStack
+			justify="flex-start"
+			align="center"
 			_hover={{
 				backgroundColor: 'gray.800',
 				cursor: 'pointer',
 				borderRadius: '20px',
 			}}
+			w="100%"
 			padding={5}
 			gap={10}
 			onClick={(e: any) => window.location.replace(`/${user.username}`)}
