@@ -33,7 +33,6 @@
 		"yup": "^0.32.11"
 	},
 	"devDependencies": {
-		"@netlify/plugin-nextjs": "^4.7.0",
 		"@types/ali-oss": "^6.16.3",
 		"@types/axios": "^0.14.0",
 		"@types/bcrypt": "^5.0.0",
