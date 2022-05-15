@@ -1,0 +1,8 @@
+yarn install
+yarn dev
+
+env:
+BACKEND_URL
+BASE_URL
+ALIBABA_KEY_ID
+ALIBABA_KEY_SECRET

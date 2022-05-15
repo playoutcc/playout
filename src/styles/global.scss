@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+html,
+body {
+	max-width: 100vw;
+}
+
+* {
+	::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+	::-webkit-scrollbar-button {
+		width: 0;
+		height: 0;
+	}
+	::-webkit-scrollbar-thumb {
+		background: #23f0c7;
+		border: 0px none #ffffff;
+		border-radius: 56px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: #23f0c7;
+	}
+	::-webkit-scrollbar-thumb:active {
+		background: #23f0c7;
+	}
+	::-webkit-scrollbar-track {
+		background: transparent;
+		border: 0px none #ffffff;
+		border-radius: 56px;
+	}
+	::-webkit-scrollbar-track:hover {
+		background: transparent;
+	}
+	::-webkit-scrollbar-track:active {
+		background: transparent;
+	}
+	::-webkit-scrollbar-corner {
+		background: transparent;
+	}
+}
+
+.chakra-menu__menu-button > span {
+	width: fit-content;
+}
+
+.header_profile {
+	.user_menu {
+		justify-content: flex-end;
+	}
+	@media screen and (max-width: 597px) {
+		flex-direction: column !important;
+		> section {
+			justify-content: center !important;
+		}
+	}
+}
+
+#__next {
+	display: flex;
+	flex-flow: nowrap column;
+	justify-content: space-between;
+	width: 100%;
+	height: 100%;
+	min-height: 100vh;
+	max-width: 1380px;
+	margin: 0 auto;
+	padding: 0 calc(100vw / 99);
+	> * {
+		width: 100%;
+		align-self: center;
+		max-width: 1130px;
+	}
+	* {
+		margin-inline-start: 0 !important;
+		margin-inline-end: 0 !important;
+	}
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	-webkit-transition: 'color 9999s ease-out, background-color 9999s ease-out';
+	-webkit-transition-delay: 9999s;
+}
+
+.upload-file {
+	svg {
+		display: none;
+	}
+	label {
+		border: dashed 2px #23f0c7 !important;
+	}
+	* {
+		color: #edf2ef !important;
+	}
+}
+
+.svg-label {
+	* {
+		stroke: #edf2ef;
+		fill: transparent;
+	}
+}
