@@ -1,0 +1,6 @@
+Sitemap: https://playout.network/api/posts-sitemap
+
+User-agent: *
+Allow: /*
+
+Disallow: /api/*
