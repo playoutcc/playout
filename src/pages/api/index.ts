@@ -7,7 +7,7 @@ type HeaderProps = {
 	path: string;
 };
 
-export default async function handler(
+export default async function handlerGeneralApi(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {

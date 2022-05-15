@@ -15,7 +15,7 @@ const client = new OSS({
 	accessKeySecret: process.env.ALIBABA_KEY_SECRET!,
 });
 
-export default async function handler(
+export default async function saveFile(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
