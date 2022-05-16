@@ -120,25 +120,30 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 		<Fragment>
 			<Head>
 				<title>Playout{prof?.username ? ` | ${prof.username}` : ''}</title>
-				<meta
-					property="og:title"
-					content={`Playout${prof?.username ? ` | ${prof.username}` : ''}`}
-				/>
-				<meta
-					property="twitter:title"
-					content={`Playout${prof?.username ? ` | ${prof.username}` : ''}`}
-				/>
-				{data && (
+				{prof && (
 					<Fragment>
+						<meta
+							property="og:title"
+							content={`Playout${prof?.username ? ` | ${prof.username}` : ''}`}
+						/>
+						<meta
+							property="twitter:title"
+							content={`Playout${prof?.username ? ` | ${prof.username}` : ''}`}
+						/>
 						<meta name="description" content={prof.description} />
-						<meta property="og:site_name" content="Playout" />
-						<meta property="og:image" content={prof.thumbnail} />
 						<meta property="og:image:width" content="480" />
 						<meta property="og:image:height" content="360" />
 						<meta property="og:description" content={prof.description} />
 						<meta property="twitter:image" content={prof.thumbnail} />
 						<meta property="twitter:description" content={prof.description} />
 						<meta property="og:site_name" content="Playout" />
+						<meta property="og:image" content={prof.thumbnail} />
+						<meta property="og:description" content="" />
+						<meta
+							property="og:url"
+							content={`https://playout.network/${prof.thumbnail}`}
+						/>
+						<meta property="og:type" content="website" />
 					</Fragment>
 				)}
 			</Head>
