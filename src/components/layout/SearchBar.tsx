@@ -92,7 +92,9 @@ export const SearchBar: FC = () => {
 						}, 600);
 					}}
 					onChange={(e: any) => {
-						e.target.value = e.target.value.replace(/[^a-z1-9]/gm, '');
+						e.target.value = e.target.value
+							.replace(/[^a-zA-Z1-9]/gm, '')
+							.toLowerCase();
 						clearTimeout(timeout);
 						timeout = setTimeout(() => {
 							if (e.target.value == '') return;
