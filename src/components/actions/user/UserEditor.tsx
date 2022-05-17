@@ -279,7 +279,9 @@ export const UserEditor: FC<Props> = ({ fullName, games, edit }) => {
 							register={register}
 							value={edit ? edit.username : undefined}
 							handleChange={(e) => {
-								e.target.value = e.target.value.replace(/[^a-z1-9]/gm, '');
+								e.target.value = e.target.value
+									.replace(/[^a-zA-Z1-9]/gm, '')
+									.toLowerCase();
 								setUser(e.target.value);
 							}}
 							errors={errors}

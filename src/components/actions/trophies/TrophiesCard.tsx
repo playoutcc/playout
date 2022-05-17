@@ -67,8 +67,14 @@ export const TrophiesCard: FC<Props> = ({ isSelf, trophy }) => {
 				<Text fontSize="2xl" fontWeight="bold">
 					{trophy.championshipName}
 				</Text>
-				{trophy.team && <Text fontSize="md">{trophy.team}</Text>}
-				<Text fontSize="small">{trophy.year}</Text>
+				<HStack gap={1} align="center" w="fit-content">
+					{trophy.team && (
+						<Text mb={1} fontSize="md">
+							{trophy.team} -
+						</Text>
+					)}
+					<Text fontSize="small">{trophy.year}</Text>
+				</HStack>
 			</VStack>
 			{menu && isSelf && (
 				<Menu>

@@ -88,6 +88,9 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 	const [isFollowing, setFollowing] = useState<boolean>(
 		prof ? prof.followers.includes(data ? data.id : '') : false
 	);
+	const [follow, setFollow] = useState<boolean>(
+		prof && data ? prof.following.includes(data.id) : false
+	);
 	useEffect(() => {
 		setMenu(true);
 	}, []);
@@ -155,6 +158,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 		setLoading();
 	};
 	const isSelf = data?.email == prof?.email;
+	if (!menu) return <></>;
 	return (
 		<Fragment>
 			<Head>
@@ -322,7 +326,13 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 								</ModalContent>
 							</Modal>
 							<VStack w="100%" spacing={2} align="flex-start">
-								<HStack wrap="wrap" gap={4} w="100%" justify="space-between">
+								<HStack
+									align="center"
+									wrap="wrap"
+									gap={4}
+									w="100%"
+									justify="space-between"
+								>
 									<Text
 										display="inline-flex"
 										alignItems="center"
@@ -345,48 +355,68 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 										)}
 									</Text>
 									{!isSelf && data && (
-										<Button
-											display="flex"
-											alignItems="center"
-											justifyContent="center"
-											size="sm"
-											gap={2}
-											color="black"
-											backgroundColor={isFollowing ? 'red.400' : 'primary.main'}
-											onClick={isFollowing ? unfollowUser : followUser}
-											_hover={{
-												backgroundColor: isFollowing
-													? 'red.500'
-													: 'primary.hover',
-											}}
-											_active={{
-												backgroundColor: isFollowing
-													? 'red.500'
-													: 'primary.hover',
-											}}
-											_focus={{
-												backgroundColor: isFollowing
-													? 'red.500'
-													: 'primary.hover',
-											}}
-											leftIcon={
-												loading ? (
-													<></>
-												) : isFollowing ? (
-													<FaHeartBroken />
-												) : (
-													<FaHeart />
-												)
-											}
-											className="action_button"
-										>
-											{!loading && (
-												<Text as="span" mt={1}>
-													{isFollowing ? 'Deixar de seguir' : 'Seguir'}
+										<HStack gap={4} align="center" justify="flex-end">
+											{follow && (
+												<Text mt={1} color="gray.500" fontSize="small">
+													Segue você
 												</Text>
 											)}
-											{loading && <Spinner size="sm" />}
-										</Button>
+											<Button
+												title={
+													isFollowing
+														? 'Deixar de seguir'
+														: follow
+														? 'Seguir de volta'
+														: 'Seguir'
+												}
+												display="flex"
+												alignItems="center"
+												justifyContent="center"
+												size="sm"
+												gap={2}
+												color="black"
+												backgroundColor={
+													isFollowing ? 'red.400' : 'primary.main'
+												}
+												onClick={isFollowing ? unfollowUser : followUser}
+												_hover={{
+													backgroundColor: isFollowing
+														? 'red.500'
+														: 'primary.hover',
+												}}
+												_active={{
+													backgroundColor: isFollowing
+														? 'red.500'
+														: 'primary.hover',
+												}}
+												_focus={{
+													backgroundColor: isFollowing
+														? 'red.500'
+														: 'primary.hover',
+												}}
+												leftIcon={
+													loading ? (
+														<></>
+													) : isFollowing ? (
+														<FaHeartBroken />
+													) : (
+														<FaHeart />
+													)
+												}
+												className="action_button"
+											>
+												{!loading && (
+													<Text as="span" mt={1}>
+														{isFollowing
+															? 'Deixar de seguir'
+															: follow
+															? 'Seguir de volta'
+															: 'Seguir'}
+													</Text>
+												)}
+												{loading && <Spinner size="sm" />}
+											</Button>
+										</HStack>
 									)}
 								</HStack>
 								<Text fontSize="sm">
@@ -408,11 +438,11 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						</HStack>
 					</VStack>
 				</HStack>
-				<VStack padding="0.5rem 0" spacing={2} align="flex-start" w="100%">
+				<VStack padding="0.5rem 0" spacing={1} align="flex-start" w="100%">
 					<HStack
 						w="100%"
 						justify="space-between"
-						padding="2rem 0"
+						padding="2rem 0 0.5rem"
 						align="center"
 					>
 						<Text fontSize="2xl">Experiências profissionais</Text>
@@ -467,11 +497,11 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						</VStack>
 					)}
 				</VStack>
-				<VStack padding="0.5rem 0" spacing={2} align="flex-start" w="100%">
+				<VStack padding="0.5rem 0" spacing={1} align="flex-start" w="100%">
 					<HStack
 						w="100%"
 						justify="space-between"
-						padding="2rem 0"
+						padding="2rem 0 0.5rem"
 						align="center"
 					>
 						<Text fontSize="2xl">Troféus</Text>
@@ -571,7 +601,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						})}
 					</HStack>
 				</VStack>
-				{data && (
+				{data && menu && (
 					<Fragment>
 						<ModalExperience
 							games={gamesData}
