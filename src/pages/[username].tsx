@@ -23,11 +23,11 @@ import {
 	useBoolean,
 	useDisclosure,
 	useToast,
-	VStack
+	VStack,
 } from '@chakra-ui/react';
 import {
 	ExperienceCard,
-	ModalExperience
+	ModalExperience,
 } from 'components/actions/experiences';
 import { ModalTrophy, TrophiesCard } from 'components/actions/trophies';
 import { ModalDelete, UserEditor } from 'components/actions/user';
@@ -43,7 +43,7 @@ import { Fragment, useEffect, useState } from 'react';
 import {
 	AiFillCaretDown,
 	AiFillPlusCircle,
-	AiOutlineQuestion
+	AiOutlineQuestion,
 } from 'react-icons/ai';
 import { BiLogOut, BiPencil, BiUser } from 'react-icons/bi';
 import { FaCrown, FaHeart, FaHeartBroken } from 'react-icons/fa';
@@ -54,7 +54,7 @@ import {
 	decodeKeyAuthorization,
 	encodeBody,
 	Games,
-	User
+	User,
 } from 'shared';
 
 type Props = {
@@ -332,7 +332,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 										{prof?.fullName.split(' ')[0]}{' '}
 										{isBeta && (
 											<Box
-												className='icon-crown-beta'
+												className="icon-crown-beta"
 												_hover={{ transform: 'scale(1.2)' }}
 												transition="all 300ms ease-in-out"
 												margin="0 0.5rem"
@@ -419,9 +419,10 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						{isSelf && (
 							<Button
 								display="flex"
-								size="sm"
-								justifyContent="center"
 								alignItems="center"
+								justifyContent="center"
+								size="sm"
+								gap={2}
 								css={{ gap: '0.5rem' }}
 								w="fit-content"
 								color="black"
@@ -433,7 +434,9 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 								_active={{ backgroundColor: 'primary.hover' }}
 								_focus={{ backgroundColor: 'primary.hover' }}
 							>
-								<Text as="span">Adicionar</Text>
+								<Text mt={1} as="span">
+									Adicionar
+								</Text>
 							</Button>
 						)}
 					</HStack>
@@ -475,10 +478,11 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						{isSelf && (
 							<Button
 								display="flex"
-								size="sm"
-								className="action_button"
-								justifyContent="center"
 								alignItems="center"
+								justifyContent="center"
+								size="sm"
+								gap={2}
+								className="action_button"
 								css={{ gap: '0.5rem' }}
 								w="fit-content"
 								color="black"
@@ -489,7 +493,9 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 								_active={{ backgroundColor: 'primary.hover' }}
 								_focus={{ backgroundColor: 'primary.hover' }}
 							>
-								<Text as="span">Adicionar</Text>
+								<Text mt={1} as="span">
+									Adicionar
+								</Text>
 							</Button>
 						)}
 					</HStack>
