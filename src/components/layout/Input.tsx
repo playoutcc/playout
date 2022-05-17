@@ -5,6 +5,7 @@ import {
 	FormErrorMessage,
 	Input as I,
 	InputGroup,
+	ResponsiveValue,
 	Text,
 	Textarea as TA,
 	useBoolean,
@@ -63,6 +64,8 @@ type PropsTextArea = {
 	};
 	value?: string;
 	required?: boolean;
+	resize?: ResponsiveValue<any>;
+	inputProps?: {};
 };
 
 export const TextArea: FC<PropsTextArea> = ({
@@ -72,6 +75,8 @@ export const TextArea: FC<PropsTextArea> = ({
 	errors,
 	value = '',
 	required = true,
+	resize = 'none',
+	inputProps = {},
 }) => {
 	return (
 		<FormControl isRequired={required} as="fieldset" isInvalid={errors[name]}>
@@ -81,9 +86,10 @@ export const TextArea: FC<PropsTextArea> = ({
 				id={name}
 				placeholder={placeHolder}
 				{...register(name)}
-				rows={6}
-				resize="none"
+				resize={resize}
 				defaultValue={value}
+				{...inputProps}
+				h="fit-content"
 			/>
 			{errors[name] && (
 				<FormErrorMessage>{errors[name].message}</FormErrorMessage>

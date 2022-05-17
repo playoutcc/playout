@@ -14,6 +14,16 @@ export type User = {
 	trophies?: Trophy[];
 	following: string[];
 	followers: string[];
+	suggestions: Suggestion[];
+};
+
+export type Suggestion = {
+	id: string;
+	username: string;
+	thumbnail: string;
+	compatibility: number;
+	followers: string[];
+	following: string[];
 };
 
 export type Trophy = {

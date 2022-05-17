@@ -32,7 +32,7 @@ export default async function handlerGeneralApi(
 				},
 			}
 		);
-		console.info(response);
+		// console.info(response);
 		return res.status(response.status).json(encodeBody({ ...response.data }));
 	} catch (err) {
 		console.error(err);

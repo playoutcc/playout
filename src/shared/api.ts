@@ -14,3 +14,14 @@ export const api = (path: string) => {
 		},
 	});
 };
+
+export const apiNews = (games: string[]) => {
+	const key = encodeKeyAuthorization(moment().toISOString());
+	return axios.create({
+		baseURL: `${process.env.BASE_URL}/api/news?games=${games}`,
+		headers: {
+			authorization: key,
+			'Content-Type': 'application/json',
+		},
+	});
+};

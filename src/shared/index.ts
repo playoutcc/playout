@@ -4,5 +4,7 @@ export * from './files';
 export * from './gamesModel';
 export * from './keyAuthorization';
 export * from './middleware';
+export * from './newsModel';
+export * from './shuffle';
 export * from './theme';
 export * from './userModel';

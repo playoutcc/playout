@@ -1,3 +1,4 @@
+export * from './FollowButton';
 export * from './Footer';
 export * from './HDivider';
 export * from './Header';

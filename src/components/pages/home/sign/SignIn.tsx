@@ -131,11 +131,11 @@ export const SignIn = () => {
 			</HStack>
 			<Button
 				w="100%"
-				color="black"
-				backgroundColor="primary.main"
 				type="submit"
 				isLoading={isPending || loading}
 				isDisabled={isPending || loading}
+				color="black"
+				backgroundColor="primary.main"
 				_hover={{ backgroundColor: 'primary.hover' }}
 				_active={{ backgroundColor: 'primary.hover' }}
 				_focus={{ backgroundColor: 'primary.hover' }}

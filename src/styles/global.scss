@@ -49,7 +49,7 @@ body {
 	.user_menu {
 		justify-content: flex-end;
 	}
-	@media screen and (max-width: 597px) {
+	@media all and (max-width: 597px) {
 		flex-direction: column !important;
 		> section {
 			justify-content: center !important;
@@ -66,10 +66,16 @@ body {
 }
 
 .action_button {
-	@media screen and (max-width: 600px) {
+	@media all and (max-width: 600px) {
 		span[class*='text'] {
 			display: none;
 		}
+	}
+}
+
+.card_feed_pc {
+	@media all and (max-width: 600px) {
+		display: none !important;
 	}
 }
 

@@ -17,7 +17,6 @@ import {
 	PopoverContent,
 	PopoverHeader,
 	PopoverTrigger,
-	Spinner,
 	StackDivider,
 	Text,
 	useBoolean,
@@ -31,7 +30,13 @@ import {
 } from 'components/actions/experiences';
 import { ModalTrophy, TrophiesCard } from 'components/actions/trophies';
 import { ModalDelete, UserEditor } from 'components/actions/user';
-import { Footer, Header, Main, SearchBar } from 'components/layout';
+import {
+	FollowButton,
+	Footer,
+	Header,
+	Main,
+	SearchBar,
+} from 'components/layout';
 import { useUser } from 'contexts';
 import { removeCookies } from 'cookies-next';
 import moment from 'moment';
@@ -46,7 +51,7 @@ import {
 	AiOutlineQuestion,
 } from 'react-icons/ai';
 import { BiLogOut, BiPencil, BiUser } from 'react-icons/bi';
-import { FaCrown, FaHeart, FaHeartBroken } from 'react-icons/fa';
+import { FaCrown } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import {
 	api,
@@ -67,7 +72,6 @@ const Trigger: any = PopoverTrigger;
 
 const Profile: NextPage<Props> = ({ profile, user, games }) => {
 	const [isOpen, { toggle: setOpen }] = useBoolean(false);
-	const [loading, { toggle: setLoading }] = useBoolean(false);
 	const [isOpenExperience, { toggle: setOpenExperience }] = useBoolean(false);
 	const [isOpenEditProfile, { toggle: setOpenEditProfile }] = useBoolean(false);
 	const [isOpenTrophy, { toggle: setOpenTrophy }] = useBoolean(false);
@@ -134,28 +138,6 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 				position: 'top-right',
 			});
 		}
-	};
-	const unfollowUser = async () => {
-		setLoading();
-		try {
-			await api(
-				`/users/unfollow/${prof.id}?email=${encodeURI(data?.email!)}`
-			).put('');
-			window.location.reload();
-			setFollowing(false);
-		} catch (err) {}
-		setLoading();
-	};
-	const followUser = async () => {
-		setLoading();
-		try {
-			await api(
-				`/users/follow/${prof.id}?email=${encodeURI(data?.email!)}`
-			).put('');
-			setFollowing(true);
-			window.location.reload();
-		} catch (err) {}
-		setLoading();
 	};
 	const isSelf = data?.email == prof?.email;
 	if (!menu) return <></>;
@@ -346,6 +328,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 												_hover={{ transform: 'scale(1.2)' }}
 												transition="all 300ms ease-in-out"
 												margin="0 0.5rem"
+												as="span"
 											>
 												<FaCrown
 													title="Este usuário participou da versão pré-beta"
@@ -361,61 +344,13 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 													Segue você
 												</Text>
 											)}
-											<Button
-												title={
-													isFollowing
-														? 'Deixar de seguir'
-														: follow
-														? 'Seguir de volta'
-														: 'Seguir'
-												}
-												display="flex"
-												alignItems="center"
-												justifyContent="center"
-												size="sm"
-												gap={2}
-												color="black"
-												backgroundColor={
-													isFollowing ? 'red.400' : 'primary.main'
-												}
-												onClick={isFollowing ? unfollowUser : followUser}
-												_hover={{
-													backgroundColor: isFollowing
-														? 'red.500'
-														: 'primary.hover',
-												}}
-												_active={{
-													backgroundColor: isFollowing
-														? 'red.500'
-														: 'primary.hover',
-												}}
-												_focus={{
-													backgroundColor: isFollowing
-														? 'red.500'
-														: 'primary.hover',
-												}}
-												leftIcon={
-													loading ? (
-														<></>
-													) : isFollowing ? (
-														<FaHeartBroken />
-													) : (
-														<FaHeart />
-													)
-												}
-												className="action_button"
-											>
-												{!loading && (
-													<Text as="span" mt={1}>
-														{isFollowing
-															? 'Deixar de seguir'
-															: follow
-															? 'Seguir de volta'
-															: 'Seguir'}
-													</Text>
-												)}
-												{loading && <Spinner size="sm" />}
-											</Button>
+											<FollowButton
+												data={data}
+												prof={prof}
+												isFollowing={isFollowing}
+												setFollowing={setFollowing}
+												follow={follow}
+											/>
 										</HStack>
 									)}
 								</HStack>
@@ -565,7 +500,11 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						css={{ gap: '0.8rem' }}
 						justify="flex-start"
 						align="flex-start"
-						wrap="wrap"
+						overflowX="auto"
+						overflowY="hidden"
+						position="relative"
+						py={interestsGames.length === 0 ? 0 : 4}
+						px={interestsGames.length === 0 ? 0 : 2}
 					>
 						{interestsGames.map((game) => {
 							return (

@@ -119,8 +119,11 @@ export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 					css={{ gap: '0.8rem' }}
 					justify="flex-start"
 					align="flex-start"
-					wrap="wrap"
-					padding={`${gamesExperiences.length == 0 ? '0' : '1rem'} 0`}
+					overflowX="auto"
+					overflowY="hidden"
+					position="relative"
+					py={gamesExperiences.length === 0 ? 0 : 4}
+					px={gamesExperiences.length === 0 ? 0 : 2}
 				>
 					{gamesExperiences.map((game) => {
 						return (
