@@ -21,12 +21,20 @@ type FieldsProps = {
 	confirmPassword?: string;
 };
 
+const passwordRegex = new RegExp(
+	'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,32})'
+);
+
 const schema = yup.object().shape({
 	password: yup
 		.string()
 		.required('Você deve digitar uma senha')
 		.min(8, 'A senha deve ter no mínimo 8 caracteres')
-		.max(32, 'A senha deve ter no máximo 32 caracteres'),
+		.max(32, 'A senha deve ter no máximo 32 caracteres')
+		.matches(
+			passwordRegex,
+			'Sua senha deve ter ao menos 1 caracterer especial, 1 letra maiúscula, 1 letra minúscula e 1 digito'
+		),
 	confirmPassword: yup
 		.string()
 		.oneOf([yup.ref('password'), null], 'As senhas não conferem'),

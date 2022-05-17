@@ -454,7 +454,7 @@ export const UserEditor: FC<Props> = ({ fullName, games, edit }) => {
 						isLoading={loading}
 						isDisabled={loading}
 					>
-						{edit ? 'Editar perfil' : 'Finalizar cadastro'}
+						{edit ? 'Salvar' : 'Finalizar cadastro'}
 					</Button>
 				</VStack>
 			</Main>

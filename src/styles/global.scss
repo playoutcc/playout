@@ -57,6 +57,22 @@ body {
 	}
 }
 
+.icon-crown-beta:hover {
+	* {
+		stroke: gold;
+		fill: gold;
+		color: gold;
+	}
+}
+
+.action_button {
+	@media screen and (max-width: 600px) {
+		span[class*='text'] {
+			display: none;
+		}
+	}
+}
+
 #__next {
 	display: flex;
 	flex-flow: nowrap column;

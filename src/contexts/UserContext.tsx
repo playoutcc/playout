@@ -1,4 +1,5 @@
 import { useBoolean, useToast } from '@chakra-ui/react';
+import { AxiosError } from 'axios';
 import { removeCookies } from 'cookies-next';
 import { setCookie } from 'nookies';
 import { createContext, FC, PropsWithChildren, useContext } from 'react';
@@ -54,8 +55,21 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
 				position: 'top-right',
 			});
 		} catch (err) {
+			if (err instanceof AxiosError) {
+				if (err.response?.status === 403) {
+					toast({
+						title: 'Usuário não existe ou senha incorreta',
+						status: 'error',
+						duration: 2500,
+						isClosable: true,
+						position: 'top-right',
+					});
+					return;
+				}
+			}
 			toast({
-				title: 'Usuário não existe ou senha incorreta',
+				title: 'Houve um erro de servidor',
+				description: 'Tente novamente mais tarde',
 				status: 'error',
 				duration: 2500,
 				isClosable: true,

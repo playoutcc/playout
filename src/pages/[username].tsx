@@ -1,5 +1,6 @@
 import {
 	Avatar,
+	Box,
 	Button,
 	HStack,
 	Menu,
@@ -7,6 +8,7 @@ import {
 	MenuItem,
 	MenuList,
 	Modal,
+	ModalCloseButton,
 	ModalContent,
 	ModalOverlay,
 	Popover,
@@ -15,21 +17,24 @@ import {
 	PopoverContent,
 	PopoverHeader,
 	PopoverTrigger,
+	Spinner,
 	StackDivider,
 	Text,
 	useBoolean,
 	useDisclosure,
 	useToast,
-	VStack,
+	VStack
 } from '@chakra-ui/react';
 import {
 	ExperienceCard,
-	ModalExperience,
+	ModalExperience
 } from 'components/actions/experiences';
+import { ModalTrophy, TrophiesCard } from 'components/actions/trophies';
 import { ModalDelete, UserEditor } from 'components/actions/user';
 import { Footer, Header, Main, SearchBar } from 'components/layout';
 import { useUser } from 'contexts';
 import { removeCookies } from 'cookies-next';
+import moment from 'moment';
 import { NextPage } from 'next';
 import Error from 'next/error';
 import Head from 'next/head';
@@ -38,9 +43,10 @@ import { Fragment, useEffect, useState } from 'react';
 import {
 	AiFillCaretDown,
 	AiFillPlusCircle,
-	AiOutlineQuestion,
+	AiOutlineQuestion
 } from 'react-icons/ai';
 import { BiLogOut, BiPencil, BiUser } from 'react-icons/bi';
+import { FaCrown, FaHeart, FaHeartBroken } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import {
 	api,
@@ -48,7 +54,7 @@ import {
 	decodeKeyAuthorization,
 	encodeBody,
 	Games,
-	User,
+	User
 } from 'shared';
 
 type Props = {
@@ -61,8 +67,10 @@ const Trigger: any = PopoverTrigger;
 
 const Profile: NextPage<Props> = ({ profile, user, games }) => {
 	const [isOpen, { toggle: setOpen }] = useBoolean(false);
+	const [loading, { toggle: setLoading }] = useBoolean(false);
 	const [isOpenExperience, { toggle: setOpenExperience }] = useBoolean(false);
 	const [isOpenEditProfile, { toggle: setOpenEditProfile }] = useBoolean(false);
+	const [isOpenTrophy, { toggle: setOpenTrophy }] = useBoolean(false);
 	const {
 		isOpen: isOpenPhoto,
 		onOpen: onOpenPhoto,
@@ -74,6 +82,12 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 		profile ? decodeBody(profile) : null
 	);
 	const [data, setData] = useState<User | null>(user ? decodeBody(user) : null);
+	const [isBeta, setBeta] = useState(
+		moment(data?.createdAt).isBefore(moment('2022/05/19'))
+	);
+	const [isFollowing, setFollowing] = useState<boolean>(
+		prof ? prof.followers.includes(data ? data.id : '') : false
+	);
 	useEffect(() => {
 		setMenu(true);
 	}, []);
@@ -83,7 +97,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 	const interestsGames: Games[] = gamesData.filter((game) =>
 		prof?.interests.includes(game.name)
 	);
-	prof.experiences = prof.experiences?.sort((a, b) => {
+	prof.experiences = prof?.experiences?.sort((a, b) => {
 		const aStartDate = new Date(a.startDate).getTime();
 		const bStartDate = new Date(b.startDate).getTime();
 		const aEndDate = (a.endDate ? new Date(a.endDate) : new Date()).getTime();
@@ -93,6 +107,9 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 		}
 		return bEndDate - aEndDate;
 	});
+	prof.trophies = prof?.trophies?.sort(
+		(a, b) => Number(b.year) - Number(a.year)
+	);
 	const changePassword = async () => {
 		try {
 			await api(`/users/change-password?email=${data?.email}`).get('');
@@ -114,6 +131,28 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 				position: 'top-right',
 			});
 		}
+	};
+	const unfollowUser = async () => {
+		setLoading();
+		try {
+			await api(
+				`/users/unfollow/${prof.id}?email=${encodeURI(data?.email!)}`
+			).put('');
+			window.location.reload();
+			setFollowing(false);
+		} catch (err) {}
+		setLoading();
+	};
+	const followUser = async () => {
+		setLoading();
+		try {
+			await api(
+				`/users/follow/${prof.id}?email=${encodeURI(data?.email!)}`
+			).put('');
+			setFollowing(true);
+			window.location.reload();
+		} catch (err) {}
+		setLoading();
 	};
 	const isSelf = data?.email == prof?.email;
 	return (
@@ -259,7 +298,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						justify="flex-start"
 						align="flex-start"
 					>
-						<HStack w="fit-content" css={{ gap: '1.8rem' }}>
+						<HStack w="100%" css={{ gap: '1.8rem' }}>
 							<Avatar
 								_hover={{ cursor: 'zoom-in', transform: 'scale(1.1)' }}
 								transform={isOpenPhoto ? 'scale(1.1)' : 'scale(1)'}
@@ -282,8 +321,74 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 									/>
 								</ModalContent>
 							</Modal>
-							<VStack spacing={0} align="flex-start">
-								<Text fontSize="2xl">{prof?.fullName}</Text>
+							<VStack w="100%" spacing={2} align="flex-start">
+								<HStack wrap="wrap" gap={4} w="100%" justify="space-between">
+									<Text
+										display="inline-flex"
+										alignItems="center"
+										gap={2}
+										fontSize="2xl"
+									>
+										{prof?.fullName.split(' ')[0]}{' '}
+										{isBeta && (
+											<Box
+												className='icon-crown-beta'
+												_hover={{ transform: 'scale(1.2)' }}
+												transition="all 300ms ease-in-out"
+												margin="0 0.5rem"
+											>
+												<FaCrown
+													title="Este usuário participou da versão pré-beta"
+													size={18}
+												/>
+											</Box>
+										)}
+									</Text>
+									{!isSelf && data && (
+										<Button
+											display="flex"
+											alignItems="center"
+											justifyContent="center"
+											size="sm"
+											gap={2}
+											color="black"
+											backgroundColor={isFollowing ? 'red.400' : 'primary.main'}
+											onClick={isFollowing ? unfollowUser : followUser}
+											_hover={{
+												backgroundColor: isFollowing
+													? 'red.500'
+													: 'primary.hover',
+											}}
+											_active={{
+												backgroundColor: isFollowing
+													? 'red.500'
+													: 'primary.hover',
+											}}
+											_focus={{
+												backgroundColor: isFollowing
+													? 'red.500'
+													: 'primary.hover',
+											}}
+											leftIcon={
+												loading ? (
+													<></>
+												) : isFollowing ? (
+													<FaHeartBroken />
+												) : (
+													<FaHeart />
+												)
+											}
+											className="action_button"
+										>
+											{!loading && (
+												<Text as="span" mt={1}>
+													{isFollowing ? 'Deixar de seguir' : 'Seguir'}
+												</Text>
+											)}
+											{loading && <Spinner size="sm" />}
+										</Button>
+									)}
+								</HStack>
 								<Text fontSize="sm">
 									@{prof?.username} - {prof?.address?.city} -{' '}
 									{prof?.address?.province}
@@ -291,6 +396,16 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 							</VStack>
 						</HStack>
 						<Text css={{ padding: '0.5rem 0' }}>{prof?.description}</Text>
+						<HStack gap={5}>
+							<Text fontSize="small">
+								<b>Seguindo: </b>
+								{prof.following.length}
+							</Text>
+							<Text fontSize="small">
+								<b>Seguidores: </b>
+								{prof.followers.length}
+							</Text>
+						</HStack>
 					</VStack>
 				</HStack>
 				<VStack padding="0.5rem 0" spacing={2} align="flex-start" w="100%">
@@ -304,6 +419,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						{isSelf && (
 							<Button
 								display="flex"
+								size="sm"
 								justifyContent="center"
 								alignItems="center"
 								css={{ gap: '0.5rem' }}
@@ -311,12 +427,13 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 								color="black"
 								onClick={setOpenExperience}
 								backgroundColor="primary.main"
+								className="action_button"
 								leftIcon={<AiFillPlusCircle />}
 								_hover={{ backgroundColor: 'primary.hover' }}
 								_active={{ backgroundColor: 'primary.hover' }}
 								_focus={{ backgroundColor: 'primary.hover' }}
 							>
-								Adicionar
+								<Text as="span">Adicionar</Text>
 							</Button>
 						)}
 					</HStack>
@@ -341,6 +458,59 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 											experience.jobTitle + experience.company + experience.id
 										}
 										experience={experience}
+									/>
+								);
+							})}
+						</VStack>
+					)}
+				</VStack>
+				<VStack padding="0.5rem 0" spacing={2} align="flex-start" w="100%">
+					<HStack
+						w="100%"
+						justify="space-between"
+						padding="2rem 0"
+						align="center"
+					>
+						<Text fontSize="2xl">Troféus</Text>
+						{isSelf && (
+							<Button
+								display="flex"
+								size="sm"
+								className="action_button"
+								justifyContent="center"
+								alignItems="center"
+								css={{ gap: '0.5rem' }}
+								w="fit-content"
+								color="black"
+								onClick={setOpenTrophy}
+								backgroundColor="primary.main"
+								leftIcon={<AiFillPlusCircle />}
+								_hover={{ backgroundColor: 'primary.hover' }}
+								_active={{ backgroundColor: 'primary.hover' }}
+								_focus={{ backgroundColor: 'primary.hover' }}
+							>
+								<Text as="span">Adicionar</Text>
+							</Button>
+						)}
+					</HStack>
+					{(!prof?.trophies || prof?.trophies.length == 0) && (
+						<Text fontSize="sm" color="gray.500">
+							Não possui troféus
+						</Text>
+					)}
+					{prof?.trophies && (
+						<VStack
+							align="flex-start"
+							w="100%"
+							spacing={6}
+							divider={<StackDivider borderColor="gray.200" />}
+						>
+							{prof?.trophies.map((trophy) => {
+								return (
+									<TrophiesCard
+										isSelf={isSelf}
+										key={trophy.championshipName + trophy.year + trophy.id}
+										trophy={trophy}
 									/>
 								);
 							})}
@@ -395,32 +565,36 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						})}
 					</HStack>
 				</VStack>
-				<ModalExperience
-					games={gamesData}
-					isOpen={isOpenExperience}
-					onClose={setOpenExperience}
-				/>
 				{data && (
-					<Modal
-						isCentered
-						isOpen={isOpenEditProfile}
-						onClose={setOpenEditProfile}
-					>
-						<ModalOverlay backgroundColor="blackAlpha.800" />
-						<ModalContent
-							h="600px"
-							overflowY="auto"
-							borderWidth="1px"
-							borderColor="primary.main"
-							p={4}
+					<Fragment>
+						<ModalExperience
+							games={gamesData}
+							isOpen={isOpenExperience}
+							onClose={setOpenExperience}
+						/>
+						<ModalTrophy isOpen={isOpenTrophy} onClose={setOpenTrophy} />
+						<Modal
+							isCentered
+							isOpen={isOpenEditProfile}
+							onClose={setOpenEditProfile}
 						>
-							<UserEditor
-								games={gamesData}
-								fullName={data?.fullName!}
-								edit={data!}
-							/>
-						</ModalContent>
-					</Modal>
+							<ModalOverlay backgroundColor="blackAlpha.800" />
+							<ModalCloseButton />
+							<ModalContent
+								h="600px"
+								overflowY="auto"
+								borderWidth="1px"
+								borderColor="primary.main"
+								p={4}
+							>
+								<UserEditor
+									games={gamesData}
+									fullName={data?.fullName!}
+									edit={data!}
+								/>
+							</ModalContent>
+						</Modal>
+					</Fragment>
 				)}
 			</Main>
 			<Footer />

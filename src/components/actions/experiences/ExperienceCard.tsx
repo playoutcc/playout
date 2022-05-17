@@ -26,20 +26,10 @@ import {
 } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { BiDotsHorizontal } from 'react-icons/bi';
-import { api, Games } from 'shared';
+import { api, Experience, Games } from 'shared';
 import { ModalExperience } from './ModalExperience';
 
 const Trigger: any = PopoverTrigger;
-
-type Experience = {
-	id: string;
-	jobTitle: string;
-	company: string;
-	startDate: string;
-	endDate?: string;
-	description: string;
-	games: string[];
-};
 
 type Props = {
 	experience: Experience;
@@ -89,7 +79,9 @@ export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 			<VStack flex={1} spacing={-2} align="flex-start" as="section">
 				<HStack w="100%" justify="space-between">
 					<VStack spacing={-2} align="flex-start">
-						<Text fontSize="2xl">{experience.company}</Text>
+						<Text fontSize="2xl" fontWeight="bold">
+							{experience.company}
+						</Text>
 						<Text fontSize="md">{experience.jobTitle}</Text>
 					</VStack>
 					{menu && isSelf && (
@@ -114,9 +106,9 @@ export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 					)}
 				</HStack>
 				<Text w="100%" padding="1rem 0" fontSize="sm">
-					{experience.startDate.split('-').reverse().join('/')} -{' '}
+					{experience.startDate.split('-').reverse().join('/').substring(3)} -{' '}
 					{experience?.endDate
-						? experience.endDate.split('-').reverse().join('/')
+						? experience.endDate.split('-').reverse().join('/').substring(3)
 						: 'até o momento'}
 				</Text>
 				<Text w="100%" padding="1rem 0" fontSize="sm">
