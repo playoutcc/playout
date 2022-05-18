@@ -7,7 +7,7 @@ body {
 
 .news_card {
 	@media all and (max-width: 940px) {
-		display: none;
+		display: none !important;
 	}
 }
 

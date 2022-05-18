@@ -11,7 +11,7 @@ export const NewsCard: FC<Props> = ({ news }) => {
 	const [size, setSize] = useState(5);
 	return (
 		<VStack
-			className="card_feed_pc news_card"
+			className="news_card"
 			justify="flex-start"
 			align="flex-start"
 			flex={1}
