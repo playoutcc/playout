@@ -5,6 +5,12 @@ body {
 	max-width: 100vw;
 }
 
+.news_card {
+	@media all and (max-width: 940px) {
+		display: none;
+	}
+}
+
 * {
 	scroll-behavior: smooth;
 	::-webkit-scrollbar {

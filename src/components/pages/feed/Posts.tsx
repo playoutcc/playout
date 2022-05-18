@@ -186,6 +186,7 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 			{changePosts && (
 				<Box zIndex={1000} position="fixed" right="10px" bottom="20px">
 					<Button
+						onClick={(e: any) => window.location.reload()}
 						display="flex"
 						alignItems="center"
 						gap={2}
@@ -198,12 +199,7 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 						leftIcon={<BiRefresh size={18} />}
 						className="action_button"
 					>
-						<Text
-							as="span"
-							onClick={(e: any) => window.location.replace('/feed#header')}
-						>
-							Novas publicações
-						</Text>
+						<Text as="span">Novas publicações</Text>
 					</Button>
 				</Box>
 			)}
