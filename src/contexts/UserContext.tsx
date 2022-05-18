@@ -64,6 +64,7 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
 						isClosable: true,
 						position: 'top-right',
 					});
+					setPending();
 					return;
 				}
 			}
