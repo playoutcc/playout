@@ -35,6 +35,7 @@ export const NewsCard: FC<Props> = ({ news }) => {
 							fontSize="small"
 							key={url + title + index}
 							href={url}
+							target="_blank"
 						>
 							{title.length > 60 ? title.substring(0, 59) + '...' : title}
 						</Link>

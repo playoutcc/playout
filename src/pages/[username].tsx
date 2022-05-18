@@ -542,6 +542,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						css={{ gap: '0.8rem' }}
 						justify="flex-start"
 						align="flex-start"
+						h="fit-content"
 						overflowX="auto"
 						overflowY="hidden"
 						position="relative"
@@ -566,7 +567,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 											name={game.name}
 										/>
 									</Trigger>
-									<PopoverContent>
+									<PopoverContent zIndex={1000}>
 										<PopoverCloseButton />
 										<PopoverHeader>
 											<Text fontSize="md">{game.name}</Text>

@@ -2,7 +2,7 @@ import moment from 'moment';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { decodeKeyAuthorization } from './keyAuthorization';
 
-const TIMEOUT_SEC = 5;
+const TIMEOUT_SEC = 25;
 
 export const middleware = (req: NextApiRequest, res: NextApiResponse) => {
 	const now = moment();

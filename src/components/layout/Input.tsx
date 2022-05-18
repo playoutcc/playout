@@ -66,6 +66,7 @@ type PropsTextArea = {
 	required?: boolean;
 	resize?: ResponsiveValue<any>;
 	inputProps?: {};
+	maxH?: string;
 };
 
 export const TextArea: FC<PropsTextArea> = ({
@@ -77,6 +78,7 @@ export const TextArea: FC<PropsTextArea> = ({
 	required = true,
 	resize = 'none',
 	inputProps = {},
+	maxH = '100%',
 }) => {
 	return (
 		<FormControl isRequired={required} as="fieldset" isInvalid={errors[name]}>
@@ -90,6 +92,7 @@ export const TextArea: FC<PropsTextArea> = ({
 				defaultValue={value}
 				{...inputProps}
 				h="fit-content"
+				maxH={maxH}
 			/>
 			{errors[name] && (
 				<FormErrorMessage>{errors[name].message}</FormErrorMessage>

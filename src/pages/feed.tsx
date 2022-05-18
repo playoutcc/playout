@@ -50,7 +50,9 @@ Feed.getInitialProps = async (ctx): Promise<any> => {
 			`/users?token=${encodeURI(decodeKeyAuthorization(nextauth))}`
 		).get('');
 		const responseGames = await api('/games').get('');
-		const responsePosts = await api(`/posts/${decodeBody(data).id}`).get('');
+		const responsePosts = await api(
+			`/posts/${decodeBody(data).id}?take=20`
+		).get('');
 		return {
 			data: data,
 			games: encodeBody(Object.values(decodeBody(responseGames.data))),

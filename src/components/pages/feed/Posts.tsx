@@ -2,6 +2,7 @@ import {
 	Box,
 	Button,
 	HStack,
+	Spinner,
 	StackDivider,
 	Text,
 	useToast,
@@ -9,12 +10,12 @@ import {
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TextArea } from 'components/layout';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { api, encodeBody, PostsPage, User } from 'shared';
+import { api, decodeBody, encodeBody, PostsPage, User } from 'shared';
 import * as yup from 'yup';
 import { CardSuggestion } from './CardSuggestion';
-import { Post } from './Post';
+import Post from './Post';
 
 type FieldsProps = {
 	body: string;
@@ -23,6 +24,7 @@ type FieldsProps = {
 const schema = yup.object().shape({
 	body: yup
 		.string()
+		.trim()
 		.required('Você deve digitar algo')
 		.max(350, 'Sua publicação deve ter no máximo 350 caracteres'),
 });
@@ -33,19 +35,47 @@ type Props = {
 };
 
 export const Posts: FC<Props> = ({ data, postsPage }) => {
+	const [page, setPage] = useState(0);
 	const [{ posts, max }, setPostsPage] = useState(postsPage);
+	const [lookingPosts, setLookingPosts] = useState(false);
+	const [lastPage, setLastPage] = useState(false);
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 		reset,
 	} = useForm<FieldsProps>({ resolver: yupResolver(schema) });
+	useEffect(() => {
+		window.onscroll = function (e: any) {
+			const { scrollTop, scrollHeight, clientHeight } =
+				e.target.scrollingElement;
+			if (scrollTop + clientHeight > scrollHeight - 1200) {
+				if (lookingPosts) return;
+				if (page + 1 > max) {
+					setLastPage(true);
+					return;
+				}
+				setLookingPosts(true);
+				api(`/posts/${data.id}?skip=${page + 1}&take=20`)
+					.get('')
+					.then(({ data }) => {
+						const response = decodeBody(data);
+						setPostsPage({
+							max: response.max,
+							posts: [...posts, ...response.posts],
+						});
+						setLookingPosts(false);
+					});
+				setPage(page + 1);
+			}
+		};
+	});
 	const toast = useToast();
 	const postsComponent = posts.map((post, index) => {
 		if (index === posts.length / 2 && posts.length > 8) {
 			return (
 				<VStack w="100%" key={post.body + index + post.createdAt}>
-					<Post post={post} />
+					<Post isSelf={post.userId === data.id} post={post} />
 					<VStack
 						as="details"
 						py={4}
@@ -86,7 +116,13 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 				</VStack>
 			);
 		}
-		return <Post key={post.body + index + post.createdAt} post={post} />;
+		return (
+			<Post
+				key={post.body + index + post.createdAt}
+				isSelf={post.userId === data.id}
+				post={post}
+			/>
+		);
 	});
 	const onSubmit = async ({ body }: FieldsProps) => {
 		try {
@@ -122,7 +158,7 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 			justify="flex-start"
 			align="start"
 			w="100%"
-			overflowY="auto"
+			overflowY="hidden"
 		>
 			<VStack
 				onSubmit={handleSubmit(onSubmit)}
@@ -131,9 +167,10 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 				as="form"
 				w="100%"
 			>
-				<Box justifySelf="center" w="100%" h="fit-content" maxH="200px">
+				<Box justifySelf="center" w="100%">
 					<TextArea
-						resize="vertical"
+						resize
+						maxH="150px"
 						errors={errors}
 						register={register}
 						inputProps={{ maxRows: 4 }}
@@ -154,16 +191,8 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 					Publicar
 				</Button>
 			</VStack>
-			<Text fontSize="xl" fontWeight="bold">
-				Publicações
-			</Text>
-			{data.following.length < -1 && (
+			{data.following.length < 3 && (
 				<>
-					<Text color="gray.500" fontSize="sm">
-						Não há publicações para você ainda, siga mais{' '}
-						{3 - data.following.length} pessoas para ver o que elas
-						compartilham.
-					</Text>
 					<VStack justify="flex-start" align="start" w="100%">
 						<Text fontSize="xl" fontWeight="bold">
 							Sugestões
@@ -197,58 +226,28 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 					</VStack>
 				</>
 			)}
-			{data.following.length >= -1 && (
-				<>
-					<VStack
-						pt={6}
-						gap={10}
-						spacing={4}
-						justify="flex-start"
-						align="start"
-						w="100%"
-						divider={<StackDivider />}
-					>
-						{postsComponent}
-					</VStack>
-					<VStack
-						as="details"
-						py={4}
-						justify="flex-start"
-						align="start"
-						w="100%"
-					>
-						<Text cursor="pointer" as="summary" fontSize="xl" fontWeight="bold">
-							Sugestões
-						</Text>
-						<HStack
-							w="100%"
-							css={{ gap: '2rem' }}
-							justify="flex-start"
-							align="flex-start"
-							overflowX="auto"
-							overflowY="hidden"
-							position="relative"
-							py={data.suggestions.length === 0 ? 0 : 4}
-							px={data.suggestions.length === 0 ? 0 : 2}
-						>
-							{data.suggestions.length === 0 && (
-								<Text fontSize="sm" color="gray.500">
-									Não há sugestões para você, adicione um jogo como interesse.
-								</Text>
-							)}
-							{data.suggestions.map((suggestion) => {
-								return (
-									<CardSuggestion
-										key={suggestion.id}
-										data={data}
-										prof={suggestion}
-									/>
-								);
-							})}
-						</HStack>
-					</VStack>
-				</>
-			)}
+			<Text fontSize="xl" fontWeight="bold">
+				Publicações
+			</Text>
+			<>
+				<VStack
+					pt={6}
+					gap={4}
+					spacing={4}
+					justify="flex-start"
+					align="start"
+					w="100%"
+					divider={<StackDivider />}
+				>
+					{postsComponent}
+				</VStack>
+				{lookingPosts && <Spinner size="md" />}
+				{lastPage && (
+					<Text color="gray.500" fontSize="sm">
+						Não há mais publicações para carregar.
+					</Text>
+				)}
+			</>
 		</VStack>
 	);
 };

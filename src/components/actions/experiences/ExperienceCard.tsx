@@ -39,9 +39,9 @@ type Props = {
 
 export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 	const [loading, { toggle: setLoading }] = useBoolean(false);
-	const [menu, setMenu] = useState(false);
-	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const toast = useToast();
+	const [menu, setMenu] = useState(false);
 	const [isOpenExperience, { toggle: setOpenExperience }] = useBoolean(false);
 	const cancelRef = useRef<any>();
 	const gamesExperiences = games.filter((game) =>

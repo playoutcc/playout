@@ -4,8 +4,6 @@ export const formatDateString = (date: string) => {
 	const now = moment();
 	const created = moment(date);
 	const diff = now.diff(created, 'minutes');
-	console.log(diff);
-	console.log(date);
 	if (diff <= 1) {
 		return 'Postado há alguns segundos';
 	} else if (diff < 60) {
