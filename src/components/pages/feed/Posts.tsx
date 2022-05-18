@@ -200,7 +200,7 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 					>
 						<Text
 							as="span"
-							onClick={(e: any) => (window.location.href = '/feed#header')}
+							onClick={(e: any) => window.location.replace('/feed#header')}
 						>
 							Novas publicações
 						</Text>
