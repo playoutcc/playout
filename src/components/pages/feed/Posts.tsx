@@ -1,18 +1,27 @@
-import { Box, Button, HStack, Text, VStack } from '@chakra-ui/react';
+import {
+	Box,
+	Button,
+	HStack,
+	StackDivider,
+	Text,
+	useToast,
+	VStack,
+} from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TextArea } from 'components/layout';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { User } from 'shared';
+import { api, encodeBody, PostsPage, User } from 'shared';
 import * as yup from 'yup';
 import { CardSuggestion } from './CardSuggestion';
+import { Post } from './Post';
 
 type FieldsProps = {
-	post: string;
+	body: string;
 };
 
 const schema = yup.object().shape({
-	post: yup
+	body: yup
 		.string()
 		.required('Você deve digitar algo')
 		.max(350, 'Sua publicação deve ter no máximo 350 caracteres'),
@@ -20,18 +29,91 @@ const schema = yup.object().shape({
 
 type Props = {
 	data: User;
+	postsPage: PostsPage;
 };
 
-export const Posts: FC<Props> = ({ data }) => {
-	console.log(data.interests);
-	const posts: any[] = [];
+export const Posts: FC<Props> = ({ data, postsPage }) => {
+	const [{ posts, max }, setPostsPage] = useState(postsPage);
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 		reset,
 	} = useForm<FieldsProps>({ resolver: yupResolver(schema) });
-	const onSubmit = (fields: FieldsProps) => {};
+	const toast = useToast();
+	const postsComponent = posts.map((post, index) => {
+		if (index === posts.length / 2 && posts.length > 8) {
+			return (
+				<VStack w="100%" key={post.body + index + post.createdAt}>
+					<Post post={post} />
+					<VStack
+						as="details"
+						py={4}
+						justify="flex-start"
+						align="start"
+						w="100%"
+					>
+						<Text cursor="pointer" as="summary" fontSize="xl" fontWeight="bold">
+							Sugestões
+						</Text>
+						<HStack
+							w="100%"
+							css={{ gap: '2rem' }}
+							justify="flex-start"
+							align="flex-start"
+							overflowX="auto"
+							overflowY="hidden"
+							position="relative"
+							py={data.suggestions.length === 0 ? 0 : 4}
+							px={data.suggestions.length === 0 ? 0 : 2}
+						>
+							{data.suggestions.length === 0 && (
+								<Text fontSize="sm" color="gray.500">
+									Não há sugestões para você, adicione um jogo como interesse.
+								</Text>
+							)}
+							{data.suggestions.map((suggestion) => {
+								return (
+									<CardSuggestion
+										key={suggestion.id}
+										data={data}
+										prof={suggestion}
+									/>
+								);
+							})}
+						</HStack>
+					</VStack>
+				</VStack>
+			);
+		}
+		return <Post key={post.body + index + post.createdAt} post={post} />;
+	});
+	const onSubmit = async ({ body }: FieldsProps) => {
+		try {
+			const requestBody = {
+				body,
+				userId: data.id,
+			};
+			await api(`/posts/`).post('', encodeBody(requestBody));
+			window.location.reload();
+			toast({
+				title: 'Publicação criada com sucesso',
+				status: 'success',
+				duration: 2000,
+				isClosable: true,
+				position: 'top-right',
+			});
+		} catch (err) {
+			toast({
+				title: 'Não conseguimos criar sua publicação',
+				description: 'Tente novamente mais tarde',
+				status: 'error',
+				duration: 2000,
+				isClosable: true,
+				position: 'top-right',
+			});
+		}
+	};
 	return (
 		<VStack
 			spacing={2}
@@ -55,7 +137,7 @@ export const Posts: FC<Props> = ({ data }) => {
 						errors={errors}
 						register={register}
 						inputProps={{ maxRows: 4 }}
-						name="post"
+						name="body"
 						placeHolder="Digite algo... O que está jogando?"
 					/>
 				</Box>
@@ -75,7 +157,7 @@ export const Posts: FC<Props> = ({ data }) => {
 			<Text fontSize="xl" fontWeight="bold">
 				Publicações
 			</Text>
-			{data.following.length < 3 && (
+			{data.following.length < -1 && (
 				<>
 					<Text color="gray.500" fontSize="sm">
 						Não há publicações para você ainda, siga mais{' '}
@@ -115,85 +197,57 @@ export const Posts: FC<Props> = ({ data }) => {
 					</VStack>
 				</>
 			)}
-			{posts.length === 0 && data.following.length > 3 && (
-				<Text fontSize="sm" color="gray.500">
-					Não há publicações.
-				</Text>
-			)}
-			{posts.map((post, index) => {
-				if (index === posts.length / Math.ceil(posts.length / 10)) {
-					return (
-						<>
-							{post}
-							<VStack justify="flex-start" align="start" w="100%">
-								<Text fontSize="xl" fontWeight="bold">
-									Sugestões
-								</Text>
-								<HStack
-									w="100%"
-									css={{ gap: '2rem' }}
-									justify="flex-start"
-									align="flex-start"
-									overflowX="auto"
-									overflowY="hidden"
-									position="relative"
-									py={data.suggestions.length === 0 ? 0 : 4}
-									px={data.suggestions.length === 0 ? 0 : 2}
-								>
-									{data.suggestions.length === 0 && (
-										<Text fontSize="sm" color="gray.500">
-											Não há sugestões para você, adicione um jogo como
-											interesse.
-										</Text>
-									)}
-									{data.suggestions.map((suggestion) => {
-										return (
-											<CardSuggestion
-												key={suggestion.id}
-												data={data}
-												prof={suggestion}
-											/>
-										);
-									})}
-								</HStack>
-							</VStack>
-						</>
-					);
-				}
-				return post;
-			})}
-			{data.following.length >= 3 && (
-				<VStack justify="flex-start" align="start" w="100%">
-					<Text fontSize="xl" fontWeight="bold">
-						Sugestões
-					</Text>
-					<HStack
-						w="100%"
-						css={{ gap: '2rem' }}
+			{data.following.length >= -1 && (
+				<>
+					<VStack
+						pt={6}
+						gap={10}
+						spacing={4}
 						justify="flex-start"
-						align="flex-start"
-						overflowX="auto"
-						overflowY="hidden"
-						position="relative"
-						py={data.suggestions.length === 0 ? 0 : 4}
-						px={data.suggestions.length === 0 ? 0 : 2}
+						align="start"
+						w="100%"
+						divider={<StackDivider />}
 					>
-						{data.suggestions.map((suggestion) => {
-							return (
-								<CardSuggestion
-									key={suggestion.id}
-									data={data}
-									prof={suggestion}
-								/>
-							);
-						})}
-					</HStack>
-				</VStack>
-			)}
-			{data.suggestions.length === 0 && (
-				<Text fontSize="sm" color="gray.500">
-					Não há sugestões para você, adicione um jogo como interesse.
-				</Text>
+						{postsComponent}
+					</VStack>
+					<VStack
+						as="details"
+						py={4}
+						justify="flex-start"
+						align="start"
+						w="100%"
+					>
+						<Text cursor="pointer" as="summary" fontSize="xl" fontWeight="bold">
+							Sugestões
+						</Text>
+						<HStack
+							w="100%"
+							css={{ gap: '2rem' }}
+							justify="flex-start"
+							align="flex-start"
+							overflowX="auto"
+							overflowY="hidden"
+							position="relative"
+							py={data.suggestions.length === 0 ? 0 : 4}
+							px={data.suggestions.length === 0 ? 0 : 2}
+						>
+							{data.suggestions.length === 0 && (
+								<Text fontSize="sm" color="gray.500">
+									Não há sugestões para você, adicione um jogo como interesse.
+								</Text>
+							)}
+							{data.suggestions.map((suggestion) => {
+								return (
+									<CardSuggestion
+										key={suggestion.id}
+										data={data}
+										prof={suggestion}
+									/>
+								);
+							})}
+						</HStack>
+					</VStack>
+				</>
 			)}
 		</VStack>
 	);

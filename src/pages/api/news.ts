@@ -45,7 +45,6 @@ export default async function handlerNews(
 		});
 		return res.status(200).json(response);
 	} catch (err) {
-		console.error(err);
 		return res
 			.status((err as any).response?.status || 500)
 			.json({ ...(err as any).response?.data });

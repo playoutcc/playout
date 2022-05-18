@@ -3,16 +3,17 @@ import { Header, Main, SearchBar } from 'components/layout';
 import { useUser } from 'contexts';
 import { FC, Fragment, useEffect, useState } from 'react';
 import { BiLogOut } from 'react-icons/bi';
-import { apiNews, News, shuffle, User } from 'shared';
+import { apiNews, News, PostsPage, shuffle, User } from 'shared';
 import { NewsCard } from './NewsCard';
 import { Posts } from './Posts';
 import { ProfileCard } from './ProfileCard';
 
 type Props = {
 	data: User;
+	posts: PostsPage;
 };
 
-export const Dashboard: FC<Props> = ({ data }) => {
+export const Dashboard: FC<Props> = ({ data, posts }) => {
 	const { logout } = useUser();
 	const [menu, setMenu] = useState(false);
 	const [news, setNews] = useState<News[]>(new Array());
@@ -70,7 +71,7 @@ export const Dashboard: FC<Props> = ({ data }) => {
 					align="flex-start"
 				>
 					<ProfileCard data={data} />
-					<Posts data={data} />
+					<Posts postsPage={posts} data={data} />
 					<NewsCard news={news} />
 				</HStack>
 			</Main>

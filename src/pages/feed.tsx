@@ -11,17 +11,20 @@ import {
 	decodeKeyAuthorization,
 	encodeBody,
 	Games,
+	PostsPage,
 	User,
 } from 'shared';
 
 type Props = {
 	data: string;
 	games: string;
+	posts: string;
 };
 
-const Feed: NextPage<Props> = ({ data, games }) => {
+const Feed: NextPage<Props> = ({ data, games, posts }) => {
 	const user: User = decodeBody(data);
 	const gamesData: Games[] = decodeBody(games);
+	const postsData: PostsPage = decodeBody(posts);
 	return (
 		<Fragment>
 			<Head>
@@ -30,7 +33,7 @@ const Feed: NextPage<Props> = ({ data, games }) => {
 			{!user.username && (
 				<UserEditor games={gamesData} fullName={user.fullName} />
 			)}
-			{user.username && <Dashboard data={user} />}
+			{user.username && <Dashboard posts={postsData} data={user} />}
 		</Fragment>
 	);
 };
@@ -47,9 +50,11 @@ Feed.getInitialProps = async (ctx): Promise<any> => {
 			`/users?token=${encodeURI(decodeKeyAuthorization(nextauth))}`
 		).get('');
 		const responseGames = await api('/games').get('');
+		const responsePosts = await api(`/posts/${decodeBody(data).id}`).get('');
 		return {
 			data: data,
 			games: encodeBody(Object.values(decodeBody(responseGames.data))),
+			posts: responsePosts.data,
 		};
 	} catch (err) {
 		removeCookies('nextauth', { req, res });

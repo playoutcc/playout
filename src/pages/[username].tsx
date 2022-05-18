@@ -37,6 +37,7 @@ import {
 	Main,
 	SearchBar,
 } from 'components/layout';
+import { CardSuggestion } from 'components/pages/feed';
 import { useUser } from 'contexts';
 import { removeCookies } from 'cookies-next';
 import moment from 'moment';
@@ -373,6 +374,47 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						</HStack>
 					</VStack>
 				</HStack>
+				{data && isSelf && (
+					<>
+						<VStack
+							as="details"
+							py={4}
+							justify="flex-start"
+							align="start"
+							w="100%"
+						>
+							<Text
+								cursor="pointer"
+								as="summary"
+								fontSize="xl"
+								fontWeight="bold"
+							>
+								Sugestões
+							</Text>
+							<HStack
+								w="100%"
+								css={{ gap: '2rem' }}
+								justify="flex-start"
+								align="flex-start"
+								overflowX="auto"
+								overflowY="hidden"
+								position="relative"
+								py={data.suggestions.length === 0 ? 0 : 4}
+								px={data.suggestions.length === 0 ? 0 : 2}
+							>
+								{data.suggestions.map((suggestion) => {
+									return (
+										<CardSuggestion
+											key={suggestion.id}
+											data={data}
+											prof={suggestion}
+										/>
+									);
+								})}
+							</HStack>
+						</VStack>
+					</>
+				)}
 				<VStack padding="0.5rem 0" spacing={1} align="flex-start" w="100%">
 					<HStack
 						w="100%"
