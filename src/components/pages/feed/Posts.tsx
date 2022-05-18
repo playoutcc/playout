@@ -153,7 +153,7 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 				userId: data.id,
 			};
 			await api(`/posts/`).post('', encodeBody(requestBody));
-			// window.location.reload();
+			window.location.reload();
 			toast({
 				title: 'Publicação criada com sucesso',
 				status: 'success',

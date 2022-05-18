@@ -47,7 +47,7 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 		setLoading();
 		try {
 			await api(`/posts/${post.id}`).delete('');
-			// window.location.reload();
+			window.location.reload();
 			toast({
 				title: 'Publicação deletada com sucesso',
 				status: 'success',
