@@ -24,7 +24,7 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
 			}, 1000);
 		}).then(() => {
 			setTimeout(() => {
-				window.location.replace('/');
+				window.location.href = '/';
 			}, 2000);
 			toast({
 				title: 'Saindo da conta...',
@@ -45,7 +45,7 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
 				maxAge: connected ? 2147483647 : undefined,
 			});
 			setTimeout(() => {
-				window.location.replace('/feed');
+				window.location.href = '/feed';
 			}, 1500);
 			toast({
 				title: 'Você será redirecionado em breve',

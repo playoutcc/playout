@@ -38,7 +38,7 @@ export const Dashboard: FC<Props> = ({ data, posts }) => {
 				<HStack className="user_menu" as="section" flex={1} w="100%" gap={3}>
 					<Avatar
 						cursor="pointer"
-						onClick={(e: any) => window.location.replace(`/${data.username}`)}
+						onClick={(e: any) => (window.location.href = `/${data.username}`)}
 						title={data.username}
 						size="sm"
 						name={data.fullName}

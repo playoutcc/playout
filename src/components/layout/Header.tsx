@@ -13,6 +13,7 @@ export const Header: FC<PropsWithChildren<Props>> = ({
 }) => {
 	return (
 		<HStack
+			id="header"
 			position="sticky"
 			top="0"
 			className={`${className}`}

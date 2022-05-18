@@ -19,7 +19,7 @@ export const CardUser: FC<Props> = ({ user }) => {
 			w="100%"
 			padding={5}
 			gap={10}
-			onClick={(e: any) => window.location.replace(`/${user.username}`)}
+			onClick={(e: any) => (window.location.href = `/${user.username}`)}
 		>
 			<Avatar src={user.thumbnail} name={user.fullName} size="xl" />
 			<VStack spacing={-2} align="flex-start">

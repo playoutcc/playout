@@ -34,17 +34,17 @@ export const Pagination: FC<Props> = ({
 				cursor="pointer"
 				w="30px"
 				h="30px"
-				onClick={(e: any) => goToPage(index)}
+				onClick={(e: any) => goToPage(index + 1)}
 				color={active === index + 1 ? 'black' : 'white'}
 				key={index}
 			>
-				<span style={{ width: 'fit-content' }}>{index + 1}</span>
+				<span style={{ width: 'fit-content' }}>{index + 2}</span>
 			</VStack>
 		);
 	}
 	return (
 		<HStack py={4} gap={2}>
-			{active !== 1 && (
+			{active !== 0 && (
 				<MdNavigateBefore
 					onClick={previousPage}
 					style={{ cursor: 'pointer' }}

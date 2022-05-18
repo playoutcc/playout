@@ -20,28 +20,38 @@ export const NewsCard: FC<Props> = ({ news }) => {
 			<Text fontSize="xl" fontWeight="bold">
 				Notícias
 			</Text>
-			{news.length === 0 && (
+			{news.filter(({ title }) => title !== null && title !== undefined)
+				.length === 0 && (
 				<Text fontSize="small" color="gray.500">
 					Não há notícias, talvez você não tenha colocado interesse em nenhum
 					jogo ou não conseguimos atualizar suas notícias.
 				</Text>
 			)}
 			<Fragment>
-				{news.map(({ url, title }, index) => {
-					if (index + 1 > size || !title || title?.length === 0) return <></>;
-					return (
-						<Link
-							title={title}
-							fontSize="small"
-							key={url + title + index}
-							href={url}
-							target="_blank"
-						>
-							{title.length > 60 ? title.substring(0, 59) + '...' : title}
-						</Link>
-					);
-				})}
-				{news.length > 5 && (
+				{news
+					.filter(({ title }) => title !== null && title !== undefined)
+					.map(({ url, title, description }, index) => {
+						if (index + 1 > size)
+							return (
+								<Fragment
+									key={url + title + index + '-' + description}
+								></Fragment>
+							);
+						return (
+							<Link
+								rel="noreferrer nofollow"
+								title={title}
+								fontSize="small"
+								key={url + title + index + '-' + description}
+								href={url}
+								target="_blank"
+							>
+								{title.length > 60 ? title.substring(0, 59) + '...' : title}
+							</Link>
+						);
+					})}
+				{news.filter(({ title }) => title !== null && title !== undefined)
+					.length > 5 && (
 					<Text
 						color="primary.main"
 						_hover={{ cursor: 'pointer' }}

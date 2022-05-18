@@ -22,11 +22,11 @@ import {
 	useBoolean,
 	useDisclosure,
 	useToast,
-	VStack,
+	VStack
 } from '@chakra-ui/react';
 import {
 	ExperienceCard,
-	ModalExperience,
+	ModalExperience
 } from 'components/actions/experiences';
 import { ModalTrophy, TrophiesCard } from 'components/actions/trophies';
 import { ModalDelete, UserEditor } from 'components/actions/user';
@@ -35,7 +35,7 @@ import {
 	Footer,
 	Header,
 	Main,
-	SearchBar,
+	SearchBar
 } from 'components/layout';
 import { CardSuggestion } from 'components/pages/feed';
 import { useUser } from 'contexts';
@@ -49,7 +49,7 @@ import { Fragment, useEffect, useState } from 'react';
 import {
 	AiFillCaretDown,
 	AiFillPlusCircle,
-	AiOutlineQuestion,
+	AiOutlineQuestion
 } from 'react-icons/ai';
 import { BiLogOut, BiPencil, BiUser } from 'react-icons/bi';
 import { FaCrown } from 'react-icons/fa';
@@ -60,7 +60,7 @@ import {
 	decodeKeyAuthorization,
 	encodeBody,
 	Games,
-	User,
+	User
 } from 'shared';
 
 type Props = {
@@ -183,7 +183,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 					{!data && (
 						<Text
 							cursor="pointer"
-							onClick={(e: any) => window.location.replace('/')}
+							onClick={(e: any) => (window.location.href = '/')}
 						>
 							Entre ou crie sua conta
 						</Text>
@@ -249,7 +249,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 					{!isSelf && data && (
 						<Avatar
 							cursor="pointer"
-							onClick={(e: any) => window.location.replace(`/${data.username}`)}
+							onClick={(e: any) => window.location.href = `/${data.username}`}
 							title={data.username}
 							size="sm"
 							name={data.fullName}

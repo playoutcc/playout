@@ -11,7 +11,7 @@ export const ProfileCard: FC<Props> = ({ data }) => {
 		<VStack className="card_feed_pc" align="flex-start" p={4}>
 			<Avatar
 				cursor="pointer"
-				onClick={(e: any) => window.location.replace(`/${data.username}`)}
+				onClick={(e: any) => (window.location.href = `/${data.username}`)}
 				title="Ir para o perfil"
 				src={data.thumbnail}
 				name={data.fullName}

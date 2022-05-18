@@ -57,7 +57,7 @@ const ChangePassword: NextPage<Props> = ({ id }) => {
 				'',
 				encodeBody({ password })
 			);
-			window.location.replace('/');
+			window.location.href = '/';
 			toast({
 				title: 'Senha alterada com sucesso',
 				description: 'Em breve você retornará para a página inicial',

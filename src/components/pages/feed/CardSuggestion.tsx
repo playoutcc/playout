@@ -22,7 +22,7 @@ export const CardSuggestion: FC<Props> = ({ prof, data }) => {
 				name={prof.username}
 				size="xl"
 				title="Ir para o perfil"
-				onClick={(e: any) => window.location.replace(`/${prof.username}`)}
+				onClick={(e: any) => (window.location.href = `/${prof.username}`)}
 			/>
 			<Text fontSize="small">@{prof.username}</Text>
 			<FollowButton

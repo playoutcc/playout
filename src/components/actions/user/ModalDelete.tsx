@@ -62,7 +62,7 @@ export const ModalDelete: FC<Props> = ({
 			await api('/auth').post('', encodeBody({ email, password }));
 			await api(`/users?email=${email}`).delete('');
 			setTimeout(() => {
-				window.location.replace('/');
+				window.location.href = '/';
 			}, 1500);
 			destroyCookie(null, 'nextauth');
 			toast({

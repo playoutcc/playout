@@ -47,7 +47,7 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 		setLoading();
 		try {
 			await api(`/posts/${post.id}`).delete('');
-			window.location.reload();
+			// window.location.reload();
 			toast({
 				title: 'Publicação deletada com sucesso',
 				status: 'success',
@@ -92,7 +92,7 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 			<HStack gap={6} w="100%" align="center" justify="space-between">
 				<Avatar
 					cursor="pointer"
-					onClick={(e: any) => window.location.replace(`/${prof?.username}`)}
+					onClick={(e: any) => (window.location.href = `/${prof?.username}`)}
 					size="lg"
 					src={prof?.thumbnail}
 					name={prof?.fullName}

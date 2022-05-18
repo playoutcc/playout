@@ -21,6 +21,8 @@ type Props = {
 	posts: string;
 };
 
+export const takeDefaultPosts = 20;
+
 const Feed: NextPage<Props> = ({ data, games, posts }) => {
 	const user: User = decodeBody(data);
 	const gamesData: Games[] = decodeBody(games);
@@ -51,7 +53,7 @@ Feed.getInitialProps = async (ctx): Promise<any> => {
 		).get('');
 		const responseGames = await api('/games').get('');
 		const responsePosts = await api(
-			`/posts/${decodeBody(data).id}?take=20`
+			`/posts/${decodeBody(data).id}?take=${takeDefaultPosts}`
 		).get('');
 		return {
 			data: data,

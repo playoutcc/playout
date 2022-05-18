@@ -1,10 +1,13 @@
 import {
 	Avatar,
+	Box,
 	FormControl,
 	HStack,
 	Input,
+	Spinner,
 	StackDivider,
 	Text,
+	useBoolean,
 	useToast,
 	VStack,
 } from '@chakra-ui/react';
@@ -22,20 +25,23 @@ export const SearchBar: FC = () => {
 	const [users, setUsers] = useState<User[]>([]);
 	const [show, setShow] = useState<boolean>(false);
 	const [user, setUser] = useState<string>('');
+	const [loading, { toggle: setLoading }] = useBoolean(false);
 	const toast = useToast();
 	let timeout: any = null;
 	const handleChange = async (username: string) => {
+		setLoading();
 		const { data } = await api(`/users/search-bar/${username}`).get('');
 		setUsers(Object.values(decodeBody(data)));
 		if (!show) setShow(true);
 		setUser(username);
+		setLoading();
 	};
 	return (
 		<HStack gap={2} flex={1} divider={<StackDivider />}>
 			<BiHome
 				title="Ir para a página principal"
 				cursor="pointer"
-				onClick={(e) => window.location.replace('/')}
+				onClick={(e) => (window.location.href = '/')}
 				size={20}
 			/>
 			<FormControl
@@ -62,46 +68,56 @@ export const SearchBar: FC = () => {
 				>
 					<AiOutlineSearch />
 				</label>
-				<Input
-					w="100%"
-					id="searchBar"
-					maxW="240px"
-					paddingLeft={10}
-					_focus={{
-						maxW: '350px',
-						borderColor: 'primary.main',
-						borderWidth: '1px',
-						borderStroke: 'solid',
-					}}
-					autoComplete="off"
-					defaultValue=""
-					transition="all 600ms ease-in-out"
-					colorScheme="teal"
-					placeholder="Digite o nome de usuário"
-					onFocus={(e: any) => {
-						setTimeout(() => {
-							setShow(true);
-						}, 600);
-					}}
-					onBlur={(e: any) => {
-						setTimeout(() => {
-							setShow(false);
-							if (e.target.value === '') {
-								setUsers([]);
-							}
-						}, 600);
-					}}
-					onChange={(e: any) => {
-						e.target.value = e.target.value
-							.replace(/[^a-zA-Z1-9]/gm, '')
-							.toLowerCase();
-						clearTimeout(timeout);
-						timeout = setTimeout(() => {
-							if (e.target.value == '') return;
-							handleChange(e.target.value);
-						}, 750);
-					}}
-				/>
+				<Box w="100%" maxW="350px" position="relative">
+					<Input
+						w="100%"
+						id="searchBar"
+						maxW="240px"
+						paddingLeft={10}
+						_focus={{
+							maxW: '350px',
+							borderColor: 'primary.main',
+							borderWidth: '1px',
+							borderStroke: 'solid',
+						}}
+						autoComplete="off"
+						defaultValue=""
+						transition="all 600ms ease-in-out"
+						colorScheme="teal"
+						placeholder="Digite o nome de usuário"
+						onFocus={(e: any) => {
+							setTimeout(() => {
+								setShow(true);
+								if (e.target.value === '') {
+									setUsers([]);
+								}
+							}, 600);
+						}}
+						onBlur={(e: any) => {
+							setTimeout(() => {
+								setShow(false);
+								if (e.target.value === '') {
+									setUsers([]);
+								}
+							}, 600);
+						}}
+						onChange={(e: any) => {
+							e.target.value = e.target.value
+								.replace(/[^a-zA-Z1-9]/gm, '')
+								.toLowerCase();
+							clearTimeout(timeout);
+							timeout = setTimeout(() => {
+								if (e.target.value == '') return;
+								handleChange(e.target.value);
+							}, 750);
+						}}
+					/>
+					{loading && (
+						<Box position="absolute" right="10px" top="25%">
+							<Spinner size="sm" />
+						</Box>
+					)}
+				</Box>
 				{users.length != 0 && show && users && (
 					<VStack
 						position="absolute"
@@ -123,9 +139,9 @@ export const SearchBar: FC = () => {
 						{users.map((user) => {
 							return (
 								<HStack
-									key={user.username}
+									key={user.username + user.thumbnail}
 									onClick={() => {
-										window.location.replace(`/${user.username}`);
+										window.location.href = `/${user.username}`;
 										toast({
 											title: 'Redirecionando para o perfil',
 											status: 'warning',
@@ -157,7 +173,7 @@ export const SearchBar: FC = () => {
 						})}
 						<HStack
 							onClick={() => {
-								window.location.replace(`/users?username=${user}`);
+								window.location.href = `/users?username=${user}`;
 								toast({
 									title: 'Buscando usuários',
 									status: 'warning',
