@@ -17,7 +17,7 @@ import {
 	useBoolean,
 	useDisclosure,
 	useToast,
-	VStack,
+	VStack
 } from '@chakra-ui/react';
 import { FC, memo, useRef } from 'react';
 import { BiDotsHorizontal } from 'react-icons/bi';
@@ -132,7 +132,7 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 				)}
 			</HStack>
 			<Text wordBreak="break-all" whiteSpace="pre-line">
-				{post.body
+				{post.body.trim()
 					.replace(/([\s\r]{2,2})/g, '\n')
 					.replace(/([\s\r]{3,})/g, '\n\n')
 					.split(/([\s\r])/g)
