@@ -33,6 +33,7 @@ export default async function handlerGeneralApi(
 			}
 		);
 		// console.info(response);
+		res.setHeader('Cache-Control', 's-maxage=10000');
 		return res.status(response.status).json(encodeBody({ ...response.data }));
 	} catch (err) {
 		console.error(err);

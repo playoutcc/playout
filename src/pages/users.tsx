@@ -1,4 +1,4 @@
-import { Button, Spinner, StackDivider, Text, VStack } from '@chakra-ui/react';
+import { Button, Spinner, Text, VStack } from '@chakra-ui/react';
 import { CardUser } from 'components/actions/user';
 import { Footer, Header, Main, Pagination, SearchBar } from 'components/layout';
 import { useUser } from 'contexts';
@@ -71,7 +71,7 @@ const Users: NextPage<Props> = ({ result, username }) => {
 				{users?.length === 0 && <Text>Não há nenhum resultado.</Text>}
 				{users?.length !== 0 && (
 					<Fragment>
-						<VStack divider={<StackDivider />} w="100%" maxW="600px" gap={6}>
+						<VStack w="100%" maxW="600px">
 							{users?.map((user) => {
 								return <CardUser key={user.email} user={user} />;
 							})}

@@ -31,6 +31,7 @@ export type Trophy = {
 	championshipName: string;
 	team?: string;
 	year: string;
+	position: string;
 };
 
 export type Address = {

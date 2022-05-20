@@ -15,7 +15,7 @@ export const CardSuggestion: FC<Props> = ({ prof, data }) => {
 		prof && data ? prof.following.includes(data.id) : false
 	);
 	return (
-		<VStack>
+		<VStack backgroundColor="gray.800" borderRadius="15px" p={6} maxW="100%">
 			<Avatar
 				cursor="pointer"
 				src={prof.thumbnail}

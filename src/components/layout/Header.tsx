@@ -13,19 +13,27 @@ export const Header: FC<PropsWithChildren<Props>> = ({
 }) => {
 	return (
 		<HStack
-			id="header"
 			position="sticky"
 			top="0"
-			className={`${className}`}
-			justify="end"
-			padding="2rem 0.3rem"
-			backgroundColor="black"
-			zIndex={1000}
-			css={css}
-			gap={5}
+			justify="center"
+			backgroundColor="gray.800"
 			as="header"
+			w="100%"
+			zIndex={1000}
 		>
-			{children}
+			<HStack
+				id="header"
+				className={`${className}`}
+				justify="end"
+				padding="1rem 0.8rem"
+				zIndex={1000}
+				css={css}
+				gap={5}
+				w="100%"
+				maxW="1380px"
+			>
+				{children}
+			</HStack>
 		</HStack>
 	);
 };

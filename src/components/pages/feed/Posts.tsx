@@ -3,7 +3,6 @@ import {
 	Button,
 	HStack,
 	Spinner,
-	StackDivider,
 	Text,
 	useToast,
 	VStack,
@@ -219,6 +218,9 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 						inputProps={{ maxRows: 4 }}
 						name="body"
 						placeHolder="Digite algo... O que está jogando?"
+						handleChange={(e: any) => {
+							e.target.value = e.target.value.replace(/([\s\r]{3,})/g, '');
+						}}
 					/>
 				</Box>
 				<Button
@@ -273,15 +275,7 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 				Publicações
 			</Text>
 			<>
-				<VStack
-					pt={6}
-					gap={4}
-					spacing={4}
-					justify="flex-start"
-					align="start"
-					w="100%"
-					divider={<StackDivider />}
-				>
+				<VStack pt={2} justify="flex-start" align="start" w="100%">
 					{postsComponent}
 				</VStack>
 				{lookingPosts && <Spinner size="md" />}

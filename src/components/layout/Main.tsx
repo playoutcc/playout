@@ -12,14 +12,17 @@ export const Main: FC<PropsWithChildren<Props>> = ({
 	divider = false,
 }) => {
 	return (
-		<VStack
-			divider={divider ? <StackDivider /> : <></>}
-			css={css}
-			padding="2rem 0.3rem"
-			maxH="fit-content"
-			as="main"
-		>
-			{children}
+		<VStack w="100%" as="main">
+			<VStack
+				maxW="1380px"
+				w="100%"
+				divider={divider ? <StackDivider /> : <></>}
+				css={css}
+				padding="2rem 0.8rem"
+				maxH="fit-content"
+			>
+				{children}
+			</VStack>
 		</VStack>
 	);
 };

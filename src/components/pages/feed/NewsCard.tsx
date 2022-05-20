@@ -16,6 +16,9 @@ export const NewsCard: FC<Props> = ({ news }) => {
 			align="flex-start"
 			flex={1}
 			maxW="280px"
+			p={6}
+			backgroundColor="gray.800"
+			borderRadius="20px"
 		>
 			<Text fontSize="xl" fontWeight="bold">
 				Notícias
@@ -63,7 +66,7 @@ export const NewsCard: FC<Props> = ({ news }) => {
 					</Text>
 				)}
 			</Fragment>
-			<Text py={8} fontSize="sm" color="primary.main">
+			<Text pt={8} pb={2} fontSize="sm" color="primary.main">
 				PlayOut © {nowDate}
 			</Text>
 		</VStack>

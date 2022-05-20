@@ -67,6 +67,7 @@ type PropsTextArea = {
 	resize?: ResponsiveValue<any>;
 	inputProps?: {};
 	maxH?: string;
+	handleChange?: (files: any) => void;
 };
 
 export const TextArea: FC<PropsTextArea> = ({
@@ -79,6 +80,7 @@ export const TextArea: FC<PropsTextArea> = ({
 	resize = 'none',
 	inputProps = {},
 	maxH = '100%',
+	handleChange,
 }) => {
 	return (
 		<FormControl isRequired={required} as="fieldset" isInvalid={errors[name]}>
@@ -87,7 +89,11 @@ export const TextArea: FC<PropsTextArea> = ({
 				_hover={{ borderColor: 'primary.main' }}
 				id={name}
 				placeholder={placeHolder}
-				{...register(name)}
+				{...register(name, {
+					onChange: (e) => {
+						if (!!handleChange) handleChange(e);
+					},
+				})}
 				resize={resize}
 				defaultValue={value}
 				{...inputProps}

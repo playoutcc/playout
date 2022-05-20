@@ -11,6 +11,12 @@ body {
 	}
 }
 
+// div[data-testid='trackList'] {
+// 	> * {
+// 		width: max-content;
+// 	}
+// }
+
 * {
 	scroll-behavior: smooth;
 	::-webkit-scrollbar {
@@ -93,13 +99,10 @@ body {
 	width: 100%;
 	height: 100%;
 	min-height: 100vh;
-	max-width: 1380px;
 	margin: 0 auto;
-	padding: 0 calc(100vw / 99);
 	> * {
 		width: 100%;
 		align-self: center;
-		max-width: 1130px;
 	}
 	* {
 		margin-inline-start: 0 !important;

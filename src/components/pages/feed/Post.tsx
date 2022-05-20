@@ -8,41 +8,39 @@ import {
 	Avatar,
 	Button,
 	HStack,
+	Link,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
-	Skeleton,
 	Text,
 	useBoolean,
 	useDisclosure,
 	useToast,
 	VStack,
 } from '@chakra-ui/react';
-import { FC, memo, useEffect, useRef, useState } from 'react';
+import { FC, memo, useRef } from 'react';
 import { BiDotsHorizontal } from 'react-icons/bi';
-import { api, decodeBody, formatDateString, Post as P, User } from 'shared';
+import { api, formatDateString, Post as P } from 'shared';
 
 type Props = {
 	post: P;
 	isSelf: boolean;
 };
 
+const URL_REGEX = /(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/g;
+
 const Post: FC<Props> = ({ post, isSelf }) => {
-	const [prof, setProf] = useState<User | undefined>(undefined);
-	const [error, setError] = useState<boolean>(false);
 	const [loading, { toggle: setLoading }] = useBoolean(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const toast = useToast();
 	const cancelRef = useRef<any>();
-	useEffect(() => {
-		api(`/users?id=${post.userId}`)
-			.get('')
-			.then(({ data }) => {
-				setProf(decodeBody(data));
-			})
-			.catch((err) => setError(true));
-	}, [post]);
+	const likePosts = async () => {
+		await api(`/posts/${post.id}?like=1`).put('', {
+			likes: post.likes.push,
+		});
+	};
+	const urls = post.body.match(URL_REGEX);
 	const deletePost = async () => {
 		setLoading();
 		try {
@@ -67,19 +65,11 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 		}
 		setLoading();
 	};
-	if (!prof && error)
+	if (!post.user)
 		return (
 			<Text fontSize="sm" color="gray.500">
-				Houve um erro ao tentar buscar essa publicação.
+				Não conseguimos carregar a publicação
 			</Text>
-		);
-	if (!prof && !error)
-		return (
-			<VStack w="100%">
-				<Skeleton w="100%" height="20px" />
-				<Skeleton w="100%" height="50px" />
-				<Skeleton w="100%" height="10px" />
-			</VStack>
 		);
 	return (
 		<VStack
@@ -87,22 +77,34 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 			align="flex-start"
 			justify="flex-start"
 			w="100%"
+			backgroundColor="gray.800"
+			borderRadius="15px"
+			p={6}
 			maxW="100%"
 		>
 			<HStack gap={6} w="100%" align="center" justify="space-between">
 				<Avatar
+					mb={4}
 					cursor="pointer"
-					onClick={(e: any) => (window.location.href = `/${prof?.username}`)}
+					onClick={(e: any) =>
+						(window.location.href = `/${post.user?.username}`)
+					}
 					size="lg"
-					src={prof?.thumbnail}
-					name={prof?.fullName}
+					src={post.user?.thumbnail}
+					name={post.user?.fullName}
 				/>
-				<VStack spacing={-1} w="100%" align="flex-start" justify="flex-start">
-					<Text fontWeight="bold">{prof?.username}</Text>
+				<VStack
+					spacing={-1}
+					w="100%"
+					h="fit-content"
+					align="flex-start"
+					justify="center"
+				>
+					<Text fontWeight="bold">{post.user?.username}</Text>
 					<Text fontSize="sm" color="gray.500">
-						{prof!.description!.length > 60
-							? prof?.description?.substring(0, 59) + '...'
-							: prof?.description}
+						{post.user!.description!.length > 60
+							? post.user?.description?.substring(0, 59) + '...'
+							: post.user?.description}
 					</Text>
 					<Text py={2} fontSize="sm" color="gray.500">
 						{formatDateString(post.createdAt)}
@@ -113,7 +115,7 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 						<MenuButton style={{ cursor: 'pointer' }} as="div">
 							<Button
 								aria-label="Opções da experiência"
-								backgroundColor="gray.900"
+								backgroundColor="transparent"
 							>
 								<BiDotsHorizontal cursor="pointer" color="white" size={20} />
 							</Button>
@@ -130,7 +132,25 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 				)}
 			</HStack>
 			<Text wordBreak="break-all" whiteSpace="pre-line">
-				{post.body}
+				{post.body
+					.replace(/([\s\r]{2,2})/g, '\n')
+					.replace(/([\s\r]{3,})/g, '\n\n')
+					.split(/([\s\r])/g)
+					.map((word) => {
+						if (urls?.includes(word)) {
+							return (
+								<Link
+									target="_blank"
+									color="primary.main"
+									href={word}
+									rel="noreferrer nofololw"
+								>
+									{word}
+								</Link>
+							);
+						}
+						return word;
+					})}
 			</Text>
 			<AlertDialog
 				isCentered

@@ -8,7 +8,13 @@ type Props = {
 
 export const ProfileCard: FC<Props> = ({ data }) => {
 	return (
-		<VStack className="card_feed_pc" align="flex-start" p={4}>
+		<VStack
+			className="card_feed_pc"
+			align="flex-start"
+			p={6}
+			backgroundColor="gray.800"
+			borderRadius="20px"
+		>
 			<Avatar
 				cursor="pointer"
 				onClick={(e: any) => (window.location.href = `/${data.username}`)}

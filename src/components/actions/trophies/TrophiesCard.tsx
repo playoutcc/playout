@@ -5,8 +5,10 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogOverlay,
+	Box,
 	Button,
 	HStack,
+	Icon,
 	Menu,
 	MenuButton,
 	MenuItem,
@@ -19,6 +21,7 @@ import {
 } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { BiDotsHorizontal } from 'react-icons/bi';
+import { BsFillTrophyFill } from 'react-icons/bs';
 import { api, Trophy } from 'shared';
 import { ModalTrophy } from './ModalTrophy';
 
@@ -61,8 +64,53 @@ export const TrophiesCard: FC<Props> = ({ isSelf, trophy }) => {
 		}
 		setLoading();
 	};
+	const positionComponent = () => {
+		let position = trophy.position.replace('°', '');
+		if (position === '1') {
+			return (
+				<Icon
+					title={trophy.position}
+					boxSize={34}
+					color="gold"
+					as={BsFillTrophyFill}
+				/>
+			);
+		} else if (position === '2') {
+			return (
+				<Icon
+					title={trophy.position}
+					boxSize={34}
+					color="silver"
+					as={BsFillTrophyFill}
+				/>
+			);
+		} else if (position === '3') {
+			return (
+				<Icon
+					title={trophy.position}
+					boxSize={34}
+					color="#B87333"
+					as={BsFillTrophyFill}
+				/>
+			);
+		} else {
+			return (
+				<Icon title={trophy.position} boxSize={34} as={BsFillTrophyFill} />
+			);
+		}
+	};
 	return (
-		<HStack w="100%" justify="space-between" align="flex-start">
+		<HStack
+			backgroundColor="gray.800"
+			borderRadius="15px"
+			p={6}
+			w="fit-content"
+			h="130px"
+			justify="space-between"
+			align="center"
+			gap={4}
+		>
+			{trophy?.position && <Box py={4}>{positionComponent()}</Box>}
 			<VStack flex={1} spacing={-2} align="flex-start" as="section">
 				<Text fontSize="2xl" fontWeight="bold">
 					{trophy.championshipName}
@@ -78,10 +126,10 @@ export const TrophiesCard: FC<Props> = ({ isSelf, trophy }) => {
 			</VStack>
 			{menu && isSelf && (
 				<Menu>
-					<MenuButton style={{ cursor: 'pointer' }} as="div">
+					<MenuButton cursor="pointer" as="div">
 						<Button
 							aria-label="Opções da experiência"
-							backgroundColor="gray.900"
+							backgroundColor="transparent"
 						>
 							<BiDotsHorizontal cursor="pointer" color="white" size={20} />
 						</Button>

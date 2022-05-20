@@ -19,7 +19,7 @@ import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiFillTrophy } from 'react-icons/ai';
 import { BiCalendar } from 'react-icons/bi';
-import { GiChampions } from 'react-icons/gi';
+import { GiChampions, GiPodium } from 'react-icons/gi';
 import { api, decodeKeyAuthorization, encodeBody, Trophy } from 'shared';
 import * as yup from 'yup';
 
@@ -27,6 +27,7 @@ type FieldsProps = {
 	championshipName: string;
 	team?: string;
 	year: string;
+	position: string;
 };
 
 const schema = yup.object().shape(
@@ -48,8 +49,18 @@ const schema = yup.object().shape(
 			.min(4, 'Data inválida')
 			.max(4, 'Data inválida')
 			.required('Você deve digitar o ano do campeonato'),
+		position: yup
+			.string()
+			.notRequired()
+			.when('team', {
+				is: (value: any) => value?.length,
+				then: (rule) => rule.min(1, 'Data inválida'),
+			}),
 	},
-	[['team', 'team']]
+	[
+		['team', 'team'],
+		['position', 'position'],
+	]
 );
 
 type Props = {
@@ -161,6 +172,18 @@ export const ModalTrophy: FC<Props> = ({ isOpen, onClose, edit }) => {
 							register={register}
 							placeHolder="Digite o nome do time"
 							value={edit ? edit?.team : ''}
+						/>
+						<Input
+							required={false}
+							leftContent={<GiPodium />}
+							name="position"
+							errors={errors}
+							register={register}
+							handleChange={(e: any) => {
+								e.target.value = e.target.value.replace(/[^0-9]/g, '') + '°';
+							}}
+							placeHolder="Digite a colocação"
+							value={edit ? edit?.position : ''}
 						/>
 					</VStack>
 				</ModalBody>

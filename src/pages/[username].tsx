@@ -11,22 +11,16 @@ import {
 	ModalCloseButton,
 	ModalContent,
 	ModalOverlay,
-	Popover,
-	PopoverBody,
-	PopoverCloseButton,
-	PopoverContent,
-	PopoverHeader,
 	PopoverTrigger,
-	StackDivider,
 	Text,
 	useBoolean,
 	useDisclosure,
 	useToast,
-	VStack
+	VStack,
 } from '@chakra-ui/react';
 import {
 	ExperienceCard,
-	ModalExperience
+	ModalExperience,
 } from 'components/actions/experiences';
 import { ModalTrophy, TrophiesCard } from 'components/actions/trophies';
 import { ModalDelete, UserEditor } from 'components/actions/user';
@@ -35,7 +29,7 @@ import {
 	Footer,
 	Header,
 	Main,
-	SearchBar
+	SearchBar,
 } from 'components/layout';
 import { CardSuggestion } from 'components/pages/feed';
 import { useUser } from 'contexts';
@@ -45,11 +39,11 @@ import { NextPage } from 'next';
 import Error from 'next/error';
 import Head from 'next/head';
 import { destroyCookie, parseCookies } from 'nookies';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import {
 	AiFillCaretDown,
 	AiFillPlusCircle,
-	AiOutlineQuestion
+	AiOutlineQuestion,
 } from 'react-icons/ai';
 import { BiLogOut, BiPencil, BiUser } from 'react-icons/bi';
 import { FaCrown } from 'react-icons/fa';
@@ -60,7 +54,7 @@ import {
 	decodeKeyAuthorization,
 	encodeBody,
 	Games,
-	User
+	User,
 } from 'shared';
 
 type Props = {
@@ -72,6 +66,7 @@ type Props = {
 const Trigger: any = PopoverTrigger;
 
 const Profile: NextPage<Props> = ({ profile, user, games }) => {
+	const ref = useRef<HTMLDivElement>({} as HTMLDivElement);
 	const [isOpen, { toggle: setOpen }] = useBoolean(false);
 	const [isOpenExperience, { toggle: setOpenExperience }] = useBoolean(false);
 	const [isOpenEditProfile, { toggle: setOpenEditProfile }] = useBoolean(false);
@@ -249,7 +244,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 					{!isSelf && data && (
 						<Avatar
 							cursor="pointer"
-							onClick={(e: any) => window.location.href = `/${data.username}`}
+							onClick={(e: any) => (window.location.href = `/${data.username}`)}
 							title={data.username}
 							size="sm"
 							name={data.fullName}
@@ -396,12 +391,15 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 								css={{ gap: '2rem' }}
 								justify="flex-start"
 								align="flex-start"
-								overflowX="auto"
-								overflowY="hidden"
 								position="relative"
 								py={data.suggestions.length === 0 ? 0 : 4}
 								px={data.suggestions.length === 0 ? 0 : 2}
 							>
+								{data.suggestions.length === 0 && (
+									<Text fontSize="sm" color="gray.500">
+										Não há sugestões para você, adicione um jogo como interesse.
+									</Text>
+								)}
 								{data.suggestions.map((suggestion) => {
 									return (
 										<CardSuggestion
@@ -417,12 +415,16 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 				)}
 				<VStack padding="0.5rem 0" spacing={1} align="flex-start" w="100%">
 					<HStack
-						w="100%"
-						justify="space-between"
-						padding="2rem 0 0.5rem"
 						align="center"
+						justify="flex-start"
+						w="100%"
+						wrap="wrap"
+						gap={4}
+						spacing={6}
 					>
-						<Text fontSize="2xl">Experiências profissionais</Text>
+						<Text py={4} fontSize="2xl">
+							Experiências profissionais
+						</Text>
 						{isSelf && (
 							<Button
 								display="flex"
@@ -453,11 +455,13 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						</Text>
 					)}
 					{prof?.experiences && (
-						<VStack
+						<HStack
 							align="flex-start"
+							justify="flex-start"
 							w="100%"
+							wrap="wrap"
+							gap={4}
 							spacing={6}
-							divider={<StackDivider borderColor="gray.200" />}
 						>
 							{prof?.experiences.map((experience) => {
 								return (
@@ -471,17 +475,21 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 									/>
 								);
 							})}
-						</VStack>
+						</HStack>
 					)}
 				</VStack>
 				<VStack padding="0.5rem 0" spacing={1} align="flex-start" w="100%">
 					<HStack
-						w="100%"
-						justify="space-between"
-						padding="2rem 0 0.5rem"
 						align="center"
+						justify="flex-start"
+						w="100%"
+						wrap="wrap"
+						gap={4}
+						spacing={6}
 					>
-						<Text fontSize="2xl">Troféus</Text>
+						<Text py={4} fontSize="2xl">
+							Troféus
+						</Text>
 						{isSelf && (
 							<Button
 								display="flex"
@@ -512,11 +520,13 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						</Text>
 					)}
 					{prof?.trophies && (
-						<VStack
-							align="flex-start"
+						<HStack
+							align="center"
+							justify="flex-start"
 							w="100%"
+							wrap="wrap"
+							gap={4}
 							spacing={6}
-							divider={<StackDivider borderColor="gray.200" />}
 						>
 							{prof?.trophies.map((trophy) => {
 								return (
@@ -527,10 +537,16 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 									/>
 								);
 							})}
-						</VStack>
+						</HStack>
 					)}
 				</VStack>
-				<VStack padding="2rem 0" spacing={2} align="flex-start" w="100%">
+				<VStack
+					ref={ref}
+					padding="2rem 0"
+					spacing={2}
+					align="flex-start"
+					w="100%"
+				>
 					<Text fontSize="2xl">Interesses</Text>
 					{(!prof?.interests || prof?.interests.length == 0) && (
 						<Text fontSize="sm" color="gray.500">
@@ -538,47 +554,36 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						</Text>
 					)}
 					<HStack
-						w="100%"
 						css={{ gap: '0.8rem' }}
 						justify="flex-start"
 						align="flex-start"
-						h="fit-content"
+						w="100%"
+						maxW={`${ref.current.offsetWidth - 50}px`}
+						whiteSpace="nowrap"
 						overflowX="auto"
-						overflowY="hidden"
 						position="relative"
+						overflowY="hidden"
+						margin="0 auto"
 						py={interestsGames.length === 0 ? 0 : 4}
 						px={interestsGames.length === 0 ? 0 : 2}
 					>
 						{interestsGames.map((game) => {
 							return (
-								<Popover key={game.name}>
-									<Trigger>
-										<Avatar
-											_hover={{
-												transform: 'scale(1.2)',
-												borderColor: 'primary.main',
-												borderWidth: '1px',
-												borderStroke: 'solid',
-											}}
-											_active={{ transform: 'scale(1.2)' }}
-											title={game.name}
-											cursor="pointer"
-											src={game.thumbnail}
-											name={game.name}
-										/>
-									</Trigger>
-									<PopoverContent zIndex={1000}>
-										<PopoverCloseButton />
-										<PopoverHeader>
-											<Text fontSize="md">{game.name}</Text>
-											<Text fontSize="smaller">{game.publisher}</Text>
-										</PopoverHeader>
-										<PopoverBody>
-											<Text fontSize="smaller">{game.genre}</Text>
-											<Text fontSize="smaller">{game.releaseDate}</Text>
-										</PopoverBody>
-									</PopoverContent>
-								</Popover>
+								<Box key={game.name}>
+									<Avatar
+										_hover={{
+											transform: 'scale(1.2)',
+											borderColor: 'primary.main',
+											borderWidth: '1px',
+											borderStroke: 'solid',
+										}}
+										_active={{ transform: 'scale(1.2)' }}
+										title={game.name}
+										cursor="pointer"
+										src={game.thumbnail}
+										name={game.name}
+									/>
+								</Box>
 							);
 						})}
 					</HStack>
@@ -639,7 +644,9 @@ Profile.getInitialProps = async (ctx): Promise<Props> => {
 		}
 		if (nextauth) {
 			const response = await api(
-				`/users?token=${encodeURI(decodeKeyAuthorization(nextauth))}`
+				`/users?token=${encodeURI(
+					decodeKeyAuthorization(nextauth)
+				)}&need_suggest=1`
 			).get('');
 			user = response.data;
 		}
