@@ -6,6 +6,10 @@ export default class Document extends NextDocument {
 		return (
 			<Html lang="pt-BR">
 				<Head>
+					<meta
+						name="google-site-verification"
+						content="N2kUh7u2NDTFERXkcc-qWE1L7xIQxeTqA2Me6S2rE9E"
+					/>
 					<meta name="theme-color" content={theme.colors.primary.main} />
 					<link
 						rel="apple-touch-icon"
