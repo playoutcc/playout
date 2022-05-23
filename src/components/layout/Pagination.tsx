@@ -10,7 +10,7 @@ type Props = {
 	goToPage: (skip: number) => void;
 };
 
-export const Pagination: FC<Props> = ({
+const Pagination: FC<Props> = ({
 	maxPage,
 	active,
 	nextPage,
@@ -62,3 +62,5 @@ export const Pagination: FC<Props> = ({
 		</HStack>
 	);
 };
+
+export default Pagination;

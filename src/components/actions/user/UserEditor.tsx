@@ -80,7 +80,7 @@ const schema = yup.object().shape({
 		.required('Você deve digitar o CEP'),
 });
 
-export const UserEditor: FC<Props> = ({ fullName, games, edit }) => {
+const UserEditor: FC<Props> = ({ fullName, games, edit }) => {
 	const { logout } = useUser();
 	const [showCep, setShowCep] = useState<boolean>(!edit);
 	const { nextauth } = parseCookies(null);
@@ -464,3 +464,5 @@ export const UserEditor: FC<Props> = ({ fullName, games, edit }) => {
 		</Fragment>
 	);
 };
+
+export default UserEditor;

@@ -37,7 +37,7 @@ const schema = yup.object().shape({
 		.max(32, 'A senha deve ter no máximo 32 caracteres'),
 });
 
-export const SignIn = () => {
+const SignIn = () => {
 	const { isPending, login } = useUser();
 	const [loading, { toggle: setLoading }] = useBoolean(false);
 	const toast = useToast();
@@ -153,3 +153,5 @@ export const SignIn = () => {
 		</VStack>
 	);
 };
+
+export default SignIn;

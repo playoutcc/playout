@@ -7,7 +7,7 @@ type Props = {
 	data: any;
 };
 
-export const CardSuggestion: FC<Props> = ({ prof, data }) => {
+const CardSuggestion: FC<Props> = ({ prof, data }) => {
 	const [isFollowing, setFollowing] = useState<boolean>(
 		prof ? prof.followers.includes(data ? data.id : '') : false
 	);
@@ -35,3 +35,5 @@ export const CardSuggestion: FC<Props> = ({ prof, data }) => {
 		</VStack>
 	);
 };
+
+export default CardSuggestion;

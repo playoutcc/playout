@@ -18,11 +18,8 @@ import {
 	useToast,
 	VStack,
 } from '@chakra-ui/react';
-import {
-	ExperienceCard,
-	ModalExperience,
-} from 'components/actions/experiences';
-import { ModalTrophy, TrophiesCard } from 'components/actions/trophies';
+import { ExperienceContainer } from 'components/actions/experiences';
+import { TrophiesContainer } from 'components/actions/trophies';
 import { ModalDelete, UserEditor } from 'components/actions/user';
 import {
 	FollowButton,
@@ -40,11 +37,7 @@ import Error from 'next/error';
 import Head from 'next/head';
 import { destroyCookie, parseCookies } from 'nookies';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import {
-	AiFillCaretDown,
-	AiFillPlusCircle,
-	AiOutlineQuestion,
-} from 'react-icons/ai';
+import { AiFillCaretDown, AiOutlineQuestion } from 'react-icons/ai';
 import { BiLogOut, BiPencil, BiUser } from 'react-icons/bi';
 import { FaCrown } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
@@ -68,9 +61,7 @@ const Trigger: any = PopoverTrigger;
 const Profile: NextPage<Props> = ({ profile, user, games }) => {
 	const ref = useRef<HTMLDivElement>({} as HTMLDivElement);
 	const [isOpen, { toggle: setOpen }] = useBoolean(false);
-	const [isOpenExperience, { toggle: setOpenExperience }] = useBoolean(false);
 	const [isOpenEditProfile, { toggle: setOpenEditProfile }] = useBoolean(false);
-	const [isOpenTrophy, { toggle: setOpenTrophy }] = useBoolean(false);
 	const {
 		isOpen: isOpenPhoto,
 		onOpen: onOpenPhoto,
@@ -413,133 +404,12 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						</VStack>
 					</>
 				)}
-				<VStack padding="0.5rem 0" spacing={1} align="flex-start" w="100%">
-					<HStack
-						align="center"
-						justify="flex-start"
-						w="100%"
-						wrap="wrap"
-						gap={4}
-						spacing={6}
-					>
-						<Text py={4} fontSize="2xl">
-							Experiências profissionais
-						</Text>
-						{isSelf && (
-							<Button
-								display="flex"
-								alignItems="center"
-								justifyContent="center"
-								size="sm"
-								gap={2}
-								css={{ gap: '0.5rem' }}
-								w="fit-content"
-								color="black"
-								onClick={setOpenExperience}
-								backgroundColor="primary.main"
-								className="action_button"
-								leftIcon={<AiFillPlusCircle />}
-								_hover={{ backgroundColor: 'primary.hover' }}
-								_active={{ backgroundColor: 'primary.hover' }}
-								_focus={{ backgroundColor: 'primary.hover' }}
-							>
-								<Text mt={1} as="span">
-									Adicionar
-								</Text>
-							</Button>
-						)}
-					</HStack>
-					{(!prof?.experiences || prof?.experiences.length == 0) && (
-						<Text fontSize="sm" color="gray.500">
-							Não possui experiências profissionais
-						</Text>
-					)}
-					{prof?.experiences && (
-						<HStack
-							align="flex-start"
-							justify="flex-start"
-							w="100%"
-							wrap="wrap"
-							gap={4}
-							spacing={6}
-						>
-							{prof?.experiences.map((experience) => {
-								return (
-									<ExperienceCard
-										isSelf={isSelf}
-										games={gamesData}
-										key={
-											experience.jobTitle + experience.company + experience.id
-										}
-										experience={experience}
-									/>
-								);
-							})}
-						</HStack>
-					)}
-				</VStack>
-				<VStack padding="0.5rem 0" spacing={1} align="flex-start" w="100%">
-					<HStack
-						align="center"
-						justify="flex-start"
-						w="100%"
-						wrap="wrap"
-						gap={4}
-						spacing={6}
-					>
-						<Text py={4} fontSize="2xl">
-							Troféus
-						</Text>
-						{isSelf && (
-							<Button
-								display="flex"
-								alignItems="center"
-								justifyContent="center"
-								size="sm"
-								gap={2}
-								className="action_button"
-								css={{ gap: '0.5rem' }}
-								w="fit-content"
-								color="black"
-								onClick={setOpenTrophy}
-								backgroundColor="primary.main"
-								leftIcon={<AiFillPlusCircle />}
-								_hover={{ backgroundColor: 'primary.hover' }}
-								_active={{ backgroundColor: 'primary.hover' }}
-								_focus={{ backgroundColor: 'primary.hover' }}
-							>
-								<Text mt={1} as="span">
-									Adicionar
-								</Text>
-							</Button>
-						)}
-					</HStack>
-					{(!prof?.trophies || prof?.trophies.length == 0) && (
-						<Text fontSize="sm" color="gray.500">
-							Não possui troféus
-						</Text>
-					)}
-					{prof?.trophies && (
-						<HStack
-							align="center"
-							justify="flex-start"
-							w="100%"
-							wrap="wrap"
-							gap={4}
-							spacing={6}
-						>
-							{prof?.trophies.map((trophy) => {
-								return (
-									<TrophiesCard
-										isSelf={isSelf}
-										key={trophy.championshipName + trophy.year + trophy.id}
-										trophy={trophy}
-									/>
-								);
-							})}
-						</HStack>
-					)}
-				</VStack>
+				<ExperienceContainer
+					gamesData={gamesData}
+					isSelf={isSelf}
+					prof={prof}
+				/>
+				<TrophiesContainer isSelf={isSelf} prof={prof} />
 				<VStack
 					ref={ref}
 					padding="2rem 0"
@@ -590,12 +460,6 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 				</VStack>
 				{data && menu && (
 					<Fragment>
-						<ModalExperience
-							games={gamesData}
-							isOpen={isOpenExperience}
-							onClose={setOpenExperience}
-						/>
-						<ModalTrophy isOpen={isOpenTrophy} onClose={setOpenTrophy} />
 						<Modal
 							isCentered
 							isOpen={isOpenEditProfile}

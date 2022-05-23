@@ -23,7 +23,7 @@ import {
 import { FC, useEffect, useRef, useState } from 'react';
 import { BiDotsHorizontal } from 'react-icons/bi';
 import { api, Experience, Games } from 'shared';
-import { ModalExperience } from './ModalExperience';
+import { ModalExperience } from './';
 
 const Trigger: any = PopoverTrigger;
 
@@ -33,7 +33,7 @@ type Props = {
 	isSelf: boolean;
 };
 
-export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
+const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 	const ref = useRef<HTMLDivElement>({} as HTMLDivElement);
 	const [showMore, setShowMore] = useState(false);
 	const [loading, { toggle: setLoading }] = useBoolean(false);
@@ -249,3 +249,5 @@ export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 		</HStack>
 	);
 };
+
+export default ExperienceCard;

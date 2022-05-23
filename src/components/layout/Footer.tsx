@@ -1,7 +1,7 @@
 import { Text, useConst, VStack } from '@chakra-ui/react';
 import { FC, PropsWithChildren } from 'react';
 
-export const Footer: FC<PropsWithChildren<{}>> = ({ children }) => {
+const Footer: FC<PropsWithChildren<{}>> = ({ children }) => {
 	const nowDate = useConst(new Date().getFullYear());
 	return (
 		<VStack padding="2rem 0.3rem" as="footer">
@@ -12,3 +12,5 @@ export const Footer: FC<PropsWithChildren<{}>> = ({ children }) => {
 		</VStack>
 	);
 };
+
+export default Footer;

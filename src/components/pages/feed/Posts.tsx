@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { BiRefresh } from 'react-icons/bi';
 import { api, decodeBody, encodeBody, PostsPage, User } from 'shared';
 import * as yup from 'yup';
-import { CardSuggestion } from './CardSuggestion';
+import { CardSuggestion } from './';
 import Post from './Post';
 
 type FieldsProps = {
@@ -35,7 +35,7 @@ type Props = {
 	postsPage: PostsPage;
 };
 
-export const Posts: FC<Props> = ({ data, postsPage }) => {
+const Posts: FC<Props> = ({ data, postsPage }) => {
 	const [printFirstPage, setPrintFirstPage] = useState(postsPage.posts);
 	const [changePosts, setChangePosts] = useState(false);
 	const [page, setPage] = useState(0);
@@ -288,3 +288,5 @@ export const Posts: FC<Props> = ({ data, postsPage }) => {
 		</VStack>
 	);
 };
+
+export default Posts;

@@ -11,7 +11,7 @@ type Props = {
 	setFollowing: any;
 };
 
-export const FollowButton: FC<Props> = ({
+const FollowButton: FC<Props> = ({
 	prof,
 	data,
 	isFollowing,
@@ -79,3 +79,5 @@ export const FollowButton: FC<Props> = ({
 		</Button>
 	);
 };
+
+export default FollowButton;

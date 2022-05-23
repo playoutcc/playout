@@ -6,11 +6,7 @@ type Props = {
 	className?: string;
 };
 
-export const Header: FC<PropsWithChildren<Props>> = ({
-	children,
-	css,
-	className,
-}) => {
+const Header: FC<PropsWithChildren<Props>> = ({ children, css, className }) => {
 	return (
 		<HStack
 			position="sticky"
@@ -37,3 +33,5 @@ export const Header: FC<PropsWithChildren<Props>> = ({
 		</HStack>
 	);
 };
+
+export default Header;

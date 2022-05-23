@@ -6,7 +6,7 @@ type Props = {
 	user: User;
 };
 
-export const CardUser: FC<Props> = ({ user }) => {
+const CardUser: FC<Props> = ({ user }) => {
 	return (
 		<HStack
 			cursor="pointer"
@@ -33,3 +33,5 @@ export const CardUser: FC<Props> = ({ user }) => {
 		</HStack>
 	);
 };
+
+export default CardUser;

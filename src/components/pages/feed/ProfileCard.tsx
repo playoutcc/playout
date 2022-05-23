@@ -6,7 +6,7 @@ type Props = {
 	data: User;
 };
 
-export const ProfileCard: FC<Props> = ({ data }) => {
+const ProfileCard: FC<Props> = ({ data }) => {
 	return (
 		<VStack
 			className="card_feed_pc"
@@ -37,3 +37,5 @@ export const ProfileCard: FC<Props> = ({ data }) => {
 		</VStack>
 	);
 };
+
+export default ProfileCard;

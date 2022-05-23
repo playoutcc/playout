@@ -6,7 +6,7 @@ type Props = {
 	news: News[];
 };
 
-export const NewsCard: FC<Props> = ({ news }) => {
+const NewsCard: FC<Props> = ({ news }) => {
 	const nowDate = useConst(new Date().getFullYear());
 	const [size, setSize] = useState(5);
 	return (
@@ -72,3 +72,5 @@ export const NewsCard: FC<Props> = ({ news }) => {
 		</VStack>
 	);
 };
+
+export default NewsCard;

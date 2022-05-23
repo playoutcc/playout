@@ -4,16 +4,14 @@ import { useUser } from 'contexts';
 import { FC, Fragment, useEffect, useState } from 'react';
 import { BiLogOut } from 'react-icons/bi';
 import { apiNews, News, PostsPage, shuffle, User } from 'shared';
-import { NewsCard } from './NewsCard';
-import { Posts } from './Posts';
-import { ProfileCard } from './ProfileCard';
+import { NewsCard, Posts, ProfileCard } from './';
 
 type Props = {
 	data: User;
 	posts: PostsPage;
 };
 
-export const Dashboard: FC<Props> = ({ data, posts }) => {
+const Dashboard: FC<Props> = ({ data, posts }) => {
 	const { logout } = useUser();
 	const [menu, setMenu] = useState(false);
 	const [news, setNews] = useState<News[]>(new Array());
@@ -78,3 +76,5 @@ export const Dashboard: FC<Props> = ({ data, posts }) => {
 		</Fragment>
 	);
 };
+
+export default Dashboard;

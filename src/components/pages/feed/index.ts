@@ -1,6 +1,8 @@
-export * from './CardSuggestion';
-export * from './Dashboard';
-export * from './NewsCard';
-export * from './Post';
-export * from './Posts';
-export * from './ProfileCard';
+import dynamic from 'next/dynamic';
+
+export const CardSuggestion = dynamic(() => import('./CardSuggestion'));
+export const Dashboard = dynamic(() => import('./Dashboard'));
+export const NewsCard = dynamic(() => import('./NewsCard'));
+export const Post = dynamic(() => import('./Post'));
+export const Posts = dynamic(() => import('./Posts'));
+export const ProfileCard = dynamic(() => import('./ProfileCard'));

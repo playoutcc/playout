@@ -8,10 +8,9 @@ import {
 	VStack,
 } from '@chakra-ui/react';
 import { HDivider } from 'components/layout';
-import { SignIn } from './SignIn';
-import { SignUp } from './SignUp';
+import { SignIn, SignUp } from './';
 
-export const Sign = () => {
+const Sign = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	return (
 		<VStack h="fit-content" w="100%" maxW="420px" spacing={5} as="section">
@@ -36,3 +35,5 @@ export const Sign = () => {
 		</VStack>
 	);
 };
+
+export default Sign;

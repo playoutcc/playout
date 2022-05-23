@@ -5,7 +5,7 @@ type Props = {
 	text: string;
 };
 
-export const HDivider: FC<Props> = ({ text }) => {
+const HDivider: FC<Props> = ({ text }) => {
 	return (
 		<HStack w="100%" spacing={6}>
 			<Divider />
@@ -16,3 +16,5 @@ export const HDivider: FC<Props> = ({ text }) => {
 		</HStack>
 	);
 };
+
+export default HDivider;

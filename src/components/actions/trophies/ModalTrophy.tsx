@@ -69,7 +69,7 @@ type Props = {
 	edit?: Trophy;
 };
 
-export const ModalTrophy: FC<Props> = ({ isOpen, onClose, edit }) => {
+const ModalTrophy: FC<Props> = ({ isOpen, onClose, edit }) => {
 	const {
 		register,
 		handleSubmit,
@@ -171,7 +171,7 @@ export const ModalTrophy: FC<Props> = ({ isOpen, onClose, edit }) => {
 							errors={errors}
 							register={register}
 							placeHolder="Digite o nome do time"
-							value={edit ? edit?.team : ''}
+							value={edit?.team ? edit?.team : ''}
 						/>
 						<Input
 							required={false}
@@ -180,10 +180,10 @@ export const ModalTrophy: FC<Props> = ({ isOpen, onClose, edit }) => {
 							errors={errors}
 							register={register}
 							handleChange={(e: any) => {
-								e.target.value = e.target.value.replace(/[^0-9]/g, '') + '°';
+								e.target.value = e.target.value.replace(/[^0-9]/g, '');
 							}}
 							placeHolder="Digite a colocação"
-							value={edit ? edit?.position : ''}
+							value={edit?.position ? edit?.position + '°' : ''}
 						/>
 					</VStack>
 				</ModalBody>
@@ -213,3 +213,5 @@ export const ModalTrophy: FC<Props> = ({ isOpen, onClose, edit }) => {
 		</Modal>
 	);
 };
+
+export default ModalTrophy;

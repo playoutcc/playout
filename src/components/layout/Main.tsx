@@ -6,7 +6,7 @@ type Props = {
 	divider?: boolean;
 };
 
-export const Main: FC<PropsWithChildren<Props>> = ({
+const Main: FC<PropsWithChildren<Props>> = ({
 	children,
 	css,
 	divider = false,
@@ -26,3 +26,5 @@ export const Main: FC<PropsWithChildren<Props>> = ({
 		</VStack>
 	);
 };
+
+export default Main;

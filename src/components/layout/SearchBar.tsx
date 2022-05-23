@@ -21,7 +21,7 @@ type User = {
 	thumbnail: string;
 };
 
-export const SearchBar: FC = () => {
+const SearchBar: FC = () => {
 	const [users, setUsers] = useState<User[]>([]);
 	const [show, setShow] = useState<boolean>(false);
 	const [user, setUser] = useState<string>('');
@@ -206,3 +206,5 @@ export const SearchBar: FC = () => {
 		</HStack>
 	);
 };
+
+export default SearchBar;

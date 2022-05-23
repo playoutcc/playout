@@ -42,12 +42,7 @@ const schema = yup.object().shape({
 		.max(32, 'A senha deve ter no máximo 32 caracteres'),
 });
 
-export const ModalDelete: FC<Props> = ({
-	email,
-	password,
-	isOpen,
-	onClose,
-}) => {
+const ModalDelete: FC<Props> = ({ email, password, isOpen, onClose }) => {
 	const [loading, { toggle: setLoading }] = useBoolean(false);
 	const toast = useToast();
 	const {
@@ -126,3 +121,5 @@ export const ModalDelete: FC<Props> = ({
 		</Modal>
 	);
 };
+
+export default ModalDelete;

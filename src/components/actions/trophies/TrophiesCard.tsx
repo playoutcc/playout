@@ -23,14 +23,14 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { BiDotsHorizontal } from 'react-icons/bi';
 import { BsFillTrophyFill } from 'react-icons/bs';
 import { api, Trophy } from 'shared';
-import { ModalTrophy } from './ModalTrophy';
+import { ModalTrophy } from './';
 
 type Props = {
 	isSelf: boolean;
 	trophy: Trophy;
 };
 
-export const TrophiesCard: FC<Props> = ({ isSelf, trophy }) => {
+const TrophiesCard: FC<Props> = ({ isSelf, trophy }) => {
 	const [menu, setMenu] = useState(false);
 	const [loading, { toggle: setLoading }] = useBoolean(false);
 	const cancelRef = useRef<any>();
@@ -184,3 +184,5 @@ export const TrophiesCard: FC<Props> = ({ isSelf, trophy }) => {
 		</HStack>
 	);
 };
+
+export default TrophiesCard;
