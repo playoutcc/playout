@@ -17,6 +17,10 @@ body {
 // 	}
 // }
 
+div.like svg {
+	fill: #23f0c7 !important;
+}
+
 * {
 	scroll-behavior: smooth;
 	::-webkit-scrollbar {

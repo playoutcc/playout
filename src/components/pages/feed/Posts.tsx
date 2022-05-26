@@ -96,7 +96,7 @@ const Posts: FC<Props> = ({ data, postsPage }) => {
 		if (index === posts.length / 2 && posts.length > 8) {
 			return (
 				<VStack w="100%" key={post.body + index + post.createdAt + post.id}>
-					<Post isSelf={post.userId === data.id} post={post} />
+					<Post data={data} isSelf={post.userId === data.id} post={post} />
 					<VStack
 						as="details"
 						py={4}
@@ -142,6 +142,7 @@ const Posts: FC<Props> = ({ data, postsPage }) => {
 				key={post.body + index + post.createdAt + post.id}
 				isSelf={post.userId === data.id}
 				post={post}
+				data={data}
 			/>
 		);
 	});

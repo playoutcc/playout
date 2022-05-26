@@ -17,21 +17,25 @@ import {
 	useBoolean,
 	useDisclosure,
 	useToast,
-	VStack
+	VStack,
 } from '@chakra-ui/react';
-import { FC, memo, useRef } from 'react';
-import { BiDotsHorizontal } from 'react-icons/bi';
-import { api, formatDateString, Post as P } from 'shared';
+import moment from 'moment';
+import { FC, memo, useRef, useState } from 'react';
+import { BiDotsHorizontal, BiLike } from 'react-icons/bi';
+import { api, Post as P, User } from 'shared';
 
 type Props = {
 	post: P;
 	isSelf: boolean;
+	data: User;
 };
 
 const URL_REGEX = /(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/g;
 
-const Post: FC<Props> = ({ post, isSelf }) => {
+const Post: FC<Props> = ({ post, isSelf, data }) => {
+	const hasLike = post.likes.findIndex((like) => like === data.id) != -1;
 	const [loading, { toggle: setLoading }] = useBoolean(false);
+	const [counterLike, setCounterLike] = useState(post.likes.length || 0);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const toast = useToast();
 	const cancelRef = useRef<any>();
@@ -41,6 +45,16 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 		});
 	};
 	const urls = post.body.match(URL_REGEX);
+	const likeOrDeslike = async () => {
+		if (!hasLike) {
+			setCounterLike(counterLike + 1);
+			await api(`/posts/${post.id}/likes/${data.id}`).put('');
+		} else {
+			setCounterLike(counterLike - 1);
+			await api(`/posts/${post.id}/dislikes/${data.id}`).put('');
+		}
+		window.location.reload();
+	};
 	const deletePost = async () => {
 		setLoading();
 		try {
@@ -106,8 +120,8 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 							? post.user?.description?.substring(0, 59) + '...'
 							: post.user?.description}
 					</Text>
-					<Text py={2} fontSize="sm" color="gray.500">
-						{formatDateString(post.createdAt)}
+					<Text py={2} fontSize="small" color="gray.500">
+						{moment(post.createdAt).format('DD/MM/yyyy hh:mm')}
 					</Text>
 				</VStack>
 				{isSelf && (
@@ -132,7 +146,8 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 				)}
 			</HStack>
 			<Text wordBreak="break-all" whiteSpace="pre-line">
-				{post.body.trim()
+				{post.body
+					.trim()
 					.replace(/([\s\r]{2,2})/g, '\n')
 					.replace(/([\s\r]{3,})/g, '\n\n')
 					.split(/([\s\r])/g)
@@ -152,6 +167,18 @@ const Post: FC<Props> = ({ post, isSelf }) => {
 						return word;
 					})}
 			</Text>
+			<HStack
+				className={hasLike ? 'like' : 'dislike'}
+				gap={2}
+				py={2}
+				align="center"
+				justify="center"
+			>
+				<BiLike cursor="pointer" onClick={likeOrDeslike} size={20} />{' '}
+				<Text pt={1} fontSize="small">
+					{counterLike}
+				</Text>
+			</HStack>
 			<AlertDialog
 				isCentered
 				isOpen={isOpen}
