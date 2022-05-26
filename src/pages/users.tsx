@@ -1,4 +1,4 @@
-import { Button, Spinner, StackDivider, Text, VStack } from '@chakra-ui/react';
+import { Button, Spinner, Text, VStack } from '@chakra-ui/react';
 import { CardUser } from 'components/actions/user';
 import { Footer, Header, Main, Pagination, SearchBar } from 'components/layout';
 import { useUser } from 'contexts';
@@ -20,10 +20,12 @@ type Props = {
 	username: string;
 };
 
+const takeDefault = 8;
+
 const Users: NextPage<Props> = ({ result, username }) => {
 	const { logout } = useUser();
 	const [{ users, max }, setData] = useState<ResultPage>(decodeBody(result));
-	const [{ take, skip }, setPage] = useState({ take: 8, skip: 0 });
+	const [{ take, skip }, setPage] = useState({ take: takeDefault, skip: 0 });
 	const nextPage = () => {
 		setPage({ take, skip: skip + 1 });
 		handleUser(skip + 1);
@@ -38,10 +40,10 @@ const Users: NextPage<Props> = ({ result, username }) => {
 	};
 	const handleUser = (skip: number) => {
 		setData({ users: undefined, max });
-		api(`/users/pages-users/${username}?take=${8}&skip=${skip}`)
+		api(`/users/pages-users/${username}?take=${take}&skip=${skip}`)
 			.get('')
 			.then(({ data }) => {
-				setData(data);
+				setData(decodeBody(data));
 			});
 	};
 	return (
@@ -69,7 +71,7 @@ const Users: NextPage<Props> = ({ result, username }) => {
 				{users?.length === 0 && <Text>Não há nenhum resultado.</Text>}
 				{users?.length !== 0 && (
 					<Fragment>
-						<VStack divider={<StackDivider />} w="100%" maxW="600px" gap={6}>
+						<VStack w="100%" maxW="600px">
 							{users?.map((user) => {
 								return <CardUser key={user.email} user={user} />;
 							})}
@@ -78,7 +80,7 @@ const Users: NextPage<Props> = ({ result, username }) => {
 							goToPage={goToPage}
 							nextPage={nextPage}
 							previousPage={previousPage}
-							active={skip + 1}
+							active={skip}
 							maxPage={max}
 						/>
 					</Fragment>
@@ -99,9 +101,9 @@ Users.getInitialProps = async (ctx) => {
 		await api(
 			`/auth/login?token=${encodeURI(decodeKeyAuthorization(nextauth))}`
 		).post('');
-		const { data } = await api(`/users/pages-users/${username}?take=${8}`).get(
-			''
-		);
+		const { data } = await api(
+			`/users/pages-users/${username}?take=${takeDefault}`
+		).get('');
 		result = data;
 	} catch (err) {
 		removeCookies('nextauth', { req, res });

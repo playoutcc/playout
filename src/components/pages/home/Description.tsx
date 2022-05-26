@@ -1,7 +1,7 @@
 import { Heading, VStack } from '@chakra-ui/react';
 import { FC } from 'react';
 
-export const Description: FC = () => {
+const Description: FC = () => {
 	return (
 		<VStack
 			align="flex-start"
@@ -33,3 +33,5 @@ export const Description: FC = () => {
 		</VStack>
 	);
 };
+
+export default Description;

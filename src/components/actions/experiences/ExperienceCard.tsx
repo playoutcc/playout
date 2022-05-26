@@ -6,17 +6,13 @@ import {
 	AlertDialogHeader,
 	AlertDialogOverlay,
 	Avatar,
+	Box,
 	Button,
 	HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
-	Popover,
-	PopoverBody,
-	PopoverCloseButton,
-	PopoverContent,
-	PopoverHeader,
 	PopoverTrigger,
 	Text,
 	useBoolean,
@@ -26,20 +22,10 @@ import {
 } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { BiDotsHorizontal } from 'react-icons/bi';
-import { api, Games } from 'shared';
-import { ModalExperience } from './ModalExperience';
+import { api, Experience, Games } from 'shared';
+import { ModalExperience } from './';
 
 const Trigger: any = PopoverTrigger;
-
-type Experience = {
-	id: string;
-	jobTitle: string;
-	company: string;
-	startDate: string;
-	endDate?: string;
-	description: string;
-	games: string[];
-};
 
 type Props = {
 	experience: Experience;
@@ -47,11 +33,13 @@ type Props = {
 	isSelf: boolean;
 };
 
-export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
+const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
+	const ref = useRef<HTMLDivElement>({} as HTMLDivElement);
+	const [showMore, setShowMore] = useState(false);
 	const [loading, { toggle: setLoading }] = useBoolean(false);
-	const [menu, setMenu] = useState(false);
-	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const toast = useToast();
+	const [menu, setMenu] = useState(false);
 	const [isOpenExperience, { toggle: setOpenExperience }] = useBoolean(false);
 	const cancelRef = useRef<any>();
 	const gamesExperiences = games.filter((game) =>
@@ -85,19 +73,53 @@ export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 		setLoading();
 	};
 	return (
-		<HStack w="100%" justify="space-between" align="flex-start">
-			<VStack flex={1} spacing={-2} align="flex-start" as="section">
+		<HStack
+			backgroundColor="gray.800"
+			borderRadius="15px"
+			p={6}
+			w="100%"
+			maxW="420px"
+			h={showMore ? 'fit-content' : '320px'}
+			justify="space-between"
+			align="flex-start"
+			position="relative"
+			ref={ref}
+		>
+			<VStack
+				position="relative"
+				flex={1}
+				spacing={-2}
+				align="flex-start"
+				justify="space-between"
+				as="section"
+				h="100%"
+			>
 				<HStack w="100%" justify="space-between">
 					<VStack spacing={-2} align="flex-start">
-						<Text fontSize="2xl">{experience.company}</Text>
+						<Text fontSize="2xl" fontWeight="bold">
+							{experience.company}
+						</Text>
 						<Text fontSize="md">{experience.jobTitle}</Text>
+						<Text
+							alignSelf="flex-start"
+							justifySelf="flex-start"
+							w="100%"
+							py={4}
+							fontSize="sm"
+						>
+							{experience.startDate.split('-').reverse().join('/').substring(3)}{' '}
+							-{' '}
+							{experience?.endDate
+								? experience.endDate.split('-').reverse().join('/').substring(3)
+								: 'até o momento'}
+						</Text>
 					</VStack>
 					{menu && isSelf && (
 						<Menu>
 							<MenuButton style={{ cursor: 'pointer' }} as="div">
 								<Button
 									aria-label="Opções da experiência"
-									backgroundColor="gray.900"
+									backgroundColor="transparent"
 								>
 									<BiDotsHorizontal cursor="pointer" color="white" size={20} />
 								</Button>
@@ -113,27 +135,60 @@ export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 						</Menu>
 					)}
 				</HStack>
-				<Text w="100%" padding="1rem 0" fontSize="sm">
-					{experience.startDate.split('-').reverse().join('/')} -{' '}
-					{experience?.endDate
-						? experience.endDate.split('-').reverse().join('/')
-						: 'até o momento'}
-				</Text>
-				<Text w="100%" padding="1rem 0" fontSize="sm">
-					{experience.description}
-				</Text>
-				<HStack
+				<Box flex={1} w="100%">
+					<Text padding="0.5rem 0" fontSize="sm">
+						{experience.description.length > 119 ? (
+							<>
+								<span>
+									{experience.description.substring(0, showMore ? 1000 : 120)}
+								</span>
+								{!showMore && '...'}
+								<br />
+								<span
+									style={{
+										cursor: 'pointer',
+										textDecoration: 'underline',
+										color: '#23f0c7',
+									}}
+									onClick={(e) => setShowMore(!showMore)}
+								>
+									mostrar {showMore ? 'menos' : 'mais'}
+								</span>
+							</>
+						) : (
+							experience.description
+						)}
+					</Text>
+				</Box>
+				<VStack
 					w="100%"
-					css={{ gap: '0.8rem' }}
 					justify="flex-start"
 					align="flex-start"
-					wrap="wrap"
-					padding={`${gamesExperiences.length == 0 ? '0' : '1rem'} 0`}
+					position="relative"
+					overflow="hidden"
 				>
-					{gamesExperiences.map((game) => {
-						return (
-							<Popover key={game.name}>
-								<Trigger title={game.name}>
+					{gamesExperiences.length !== 0 && (
+						<Text fontSize="xl" fontWeight="bold">
+							Jogos que fizeram parte
+						</Text>
+					)}
+					<HStack
+						css={{ gap: '0.3rem' }}
+						justify="flex-start"
+						align="flex-start"
+						w="100%"
+						maxW={`${ref.current.offsetWidth - 50}px`}
+						whiteSpace="nowrap"
+						overflowX="auto"
+						position="relative"
+						overflowY="hidden"
+						margin="0 auto"
+						py={gamesExperiences.length === 0 ? 0 : 4}
+						px={gamesExperiences.length === 0 ? 0 : 2}
+					>
+						{gamesExperiences.map((game) => {
+							return (
+								<Box px={2} key={game.name}>
 									<Avatar
 										_hover={{
 											transform: 'scale(1.2)',
@@ -147,22 +202,11 @@ export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 										src={game.thumbnail}
 										name={game.name}
 									/>
-								</Trigger>
-								<PopoverContent>
-									<PopoverCloseButton />
-									<PopoverHeader>
-										<Text fontSize="md">{game.name}</Text>
-										<Text fontSize="smaller">{game.publisher}</Text>
-									</PopoverHeader>
-									<PopoverBody>
-										<Text fontSize="smaller">{game.genre}</Text>
-										<Text fontSize="smaller">{game.releaseDate}</Text>
-									</PopoverBody>
-								</PopoverContent>
-							</Popover>
-						);
-					})}
-				</HStack>
+								</Box>
+							);
+						})}
+					</HStack>
+				</VStack>
 			</VStack>
 			<AlertDialog
 				isCentered
@@ -205,3 +249,5 @@ export const ExperienceCard: FC<Props> = ({ experience, games, isSelf }) => {
 		</HStack>
 	);
 };
+
+export default ExperienceCard;

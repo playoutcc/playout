@@ -37,7 +37,7 @@ const schema = yup.object().shape({
 		.max(32, 'A senha deve ter no máximo 32 caracteres'),
 });
 
-export const SignIn = () => {
+const SignIn = () => {
 	const { isPending, login } = useUser();
 	const [loading, { toggle: setLoading }] = useBoolean(false);
 	const toast = useToast();
@@ -131,11 +131,11 @@ export const SignIn = () => {
 			</HStack>
 			<Button
 				w="100%"
-				color="black"
-				backgroundColor="primary.main"
 				type="submit"
 				isLoading={isPending || loading}
 				isDisabled={isPending || loading}
+				color="black"
+				backgroundColor="primary.main"
 				_hover={{ backgroundColor: 'primary.hover' }}
 				_active={{ backgroundColor: 'primary.hover' }}
 				_focus={{ backgroundColor: 'primary.hover' }}
@@ -153,3 +153,5 @@ export const SignIn = () => {
 		</VStack>
 	);
 };
+
+export default SignIn;

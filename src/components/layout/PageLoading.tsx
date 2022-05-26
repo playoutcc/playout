@@ -1,10 +1,9 @@
 import { Spinner } from '@chakra-ui/react';
 import Head from 'next/head';
 import { FC, Fragment } from 'react';
-import { Footer } from './Footer';
-import { Main } from './Main';
+import { Footer, Main } from './';
 
-export const PageLoading: FC = () => {
+const PageLoading: FC = () => {
 	return (
 		<Fragment>
 			<Head>Playout | Carregando...</Head>
@@ -22,3 +21,5 @@ export const PageLoading: FC = () => {
 		</Fragment>
 	);
 };
+
+export default PageLoading;

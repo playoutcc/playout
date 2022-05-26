@@ -5,6 +5,7 @@ import {
 	FormErrorMessage,
 	Input as I,
 	InputGroup,
+	ResponsiveValue,
 	Text,
 	Textarea as TA,
 	useBoolean,
@@ -38,6 +39,7 @@ type Props = {
 	inputProps?: {};
 	handleChange?: (value: any) => void;
 	value?: string;
+	required?: boolean;
 };
 
 type PropsFile = {
@@ -50,6 +52,7 @@ type PropsFile = {
 	handleChange: (files: any) => void;
 	file: string | null;
 	fullName: string;
+	required?: boolean;
 };
 
 type PropsTextArea = {
@@ -60,6 +63,11 @@ type PropsTextArea = {
 		[x: string]: any;
 	};
 	value?: string;
+	required?: boolean;
+	resize?: ResponsiveValue<any>;
+	inputProps?: {};
+	maxH?: string;
+	handleChange?: (files: any) => void;
 };
 
 export const TextArea: FC<PropsTextArea> = ({
@@ -68,18 +76,29 @@ export const TextArea: FC<PropsTextArea> = ({
 	register,
 	errors,
 	value = '',
+	required = true,
+	resize = 'none',
+	inputProps = {},
+	maxH = '100%',
+	handleChange,
 }) => {
 	return (
-		<FormControl as="fieldset" isInvalid={errors[name]}>
+		<FormControl isRequired={required} as="fieldset" isInvalid={errors[name]}>
 			<TA
 				focusBorderColor="primary.main"
 				_hover={{ borderColor: 'primary.main' }}
 				id={name}
 				placeholder={placeHolder}
-				{...register(name)}
-				rows={6}
-				resize="none"
+				{...register(name, {
+					onChange: (e) => {
+						if (!!handleChange) handleChange(e);
+					},
+				})}
+				resize={resize}
 				defaultValue={value}
+				{...inputProps}
+				h="fit-content"
+				maxH={maxH}
 			/>
 			{errors[name] && (
 				<FormErrorMessage>{errors[name].message}</FormErrorMessage>
@@ -98,10 +117,12 @@ export const InputFile: FC<PropsFile> = ({
 	handleChange,
 	fullName,
 	file,
+	required = true,
 }) => {
 	const [error, setError] = useState<string | null>(null);
 	return (
 		<FormControl
+			isRequired={required}
 			isInvalid={!!error}
 			className="upload-file"
 			as="fieldset"
@@ -146,6 +167,7 @@ export const Input: FC<Props> = ({
 	handleChange = null,
 	showErrorMessage = true,
 	value = '',
+	required = true,
 }) => {
 	return (
 		<FormControl
@@ -153,6 +175,7 @@ export const Input: FC<Props> = ({
 			css={css}
 			as="fieldset"
 			isInvalid={errors[name]}
+			isRequired={required}
 		>
 			<InputGroup>
 				{leftContent && (
@@ -215,6 +238,11 @@ export const Input: FC<Props> = ({
 					/>
 				)}
 			</InputGroup>
+			{!required && (
+				<Text as="label" htmlFor={name} fontSize={11}>
+					Opcional
+				</Text>
+			)}
 			{errors[name] && showErrorMessage && (
 				<FormErrorMessage>{errors[name].message}</FormErrorMessage>
 			)}
@@ -230,10 +258,11 @@ export const InputPassword: FC<Props> = ({
 	inputMode = 'text',
 	leftContent = undefined,
 	placeHolder,
+	required = true,
 }) => {
-	const [show, { on, off, toggle: setShow }] = useBoolean(false);
+	const [show, { toggle: setShow }] = useBoolean(false);
 	return (
-		<FormControl as="fieldset" isInvalid={errors[name]}>
+		<FormControl isRequired={required} as="fieldset" isInvalid={errors[name]}>
 			<InputGroup>
 				{leftContent && (
 					<label

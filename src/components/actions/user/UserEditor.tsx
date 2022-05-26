@@ -80,7 +80,7 @@ const schema = yup.object().shape({
 		.required('Você deve digitar o CEP'),
 });
 
-export const UserEditor: FC<Props> = ({ fullName, games, edit }) => {
+const UserEditor: FC<Props> = ({ fullName, games, edit }) => {
 	const { logout } = useUser();
 	const [showCep, setShowCep] = useState<boolean>(!edit);
 	const { nextauth } = parseCookies(null);
@@ -279,7 +279,9 @@ export const UserEditor: FC<Props> = ({ fullName, games, edit }) => {
 							register={register}
 							value={edit ? edit.username : undefined}
 							handleChange={(e) => {
-								e.target.value = e.target.value.replace(/[^a-z1-9]/gm, '');
+								e.target.value = e.target.value
+									.replace(/[^a-zA-Z1-9]/gm, '')
+									.toLowerCase();
 								setUser(e.target.value);
 							}}
 							errors={errors}
@@ -454,7 +456,7 @@ export const UserEditor: FC<Props> = ({ fullName, games, edit }) => {
 						isLoading={loading}
 						isDisabled={loading}
 					>
-						{edit ? 'Editar perfil' : 'Finalizar cadastro'}
+						{edit ? 'Salvar' : 'Finalizar cadastro'}
 					</Button>
 				</VStack>
 			</Main>
@@ -462,3 +464,5 @@ export const UserEditor: FC<Props> = ({ fullName, games, edit }) => {
 		</Fragment>
 	);
 };
+
+export default UserEditor;

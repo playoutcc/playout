@@ -68,12 +68,7 @@ const schema = yup.object().shape({
 		.min(6, 'Digite ao menos 6 caracteres'),
 });
 
-export const ModalExperience: FC<Props> = ({
-	isOpen,
-	onClose,
-	games,
-	edit,
-}) => {
+const ModalExperience: FC<Props> = ({ isOpen, onClose, games, edit }) => {
 	const {
 		register,
 		handleSubmit,
@@ -305,3 +300,5 @@ export const ModalExperience: FC<Props> = ({
 		</Modal>
 	);
 };
+
+export default ModalExperience;

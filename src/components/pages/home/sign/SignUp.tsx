@@ -61,7 +61,7 @@ const schema = yup.object().shape({
 		.oneOf([yup.ref('password'), null], 'As senhas não conferem'),
 });
 
-export const SignUp: FC<Props> = ({ onClose }) => {
+const SignUp: FC<Props> = ({ onClose }) => {
 	const [loading, { toggle: setLoading }] = useBoolean(false);
 	const [step, setStep] = useState<number>(0);
 	const [error, setError] = useState(false);
@@ -242,3 +242,5 @@ export const SignUp: FC<Props> = ({ onClose }) => {
 		</Fragment>
 	);
 };
+
+export default SignUp;

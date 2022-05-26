@@ -1,5 +1,6 @@
 import {
 	Avatar,
+	Box,
 	Button,
 	HStack,
 	Menu,
@@ -7,40 +8,38 @@ import {
 	MenuItem,
 	MenuList,
 	Modal,
+	ModalCloseButton,
 	ModalContent,
 	ModalOverlay,
-	Popover,
-	PopoverBody,
-	PopoverCloseButton,
-	PopoverContent,
-	PopoverHeader,
 	PopoverTrigger,
-	StackDivider,
 	Text,
 	useBoolean,
 	useDisclosure,
 	useToast,
 	VStack,
 } from '@chakra-ui/react';
-import {
-	ExperienceCard,
-	ModalExperience,
-} from 'components/actions/experiences';
+import { ExperienceContainer } from 'components/actions/experiences';
+import { TrophiesContainer } from 'components/actions/trophies';
 import { ModalDelete, UserEditor } from 'components/actions/user';
-import { Footer, Header, Main, SearchBar } from 'components/layout';
+import {
+	FollowButton,
+	Footer,
+	Header,
+	Main,
+	SearchBar,
+} from 'components/layout';
+import { CardSuggestion } from 'components/pages/feed';
 import { useUser } from 'contexts';
 import { removeCookies } from 'cookies-next';
+import moment from 'moment';
 import { NextPage } from 'next';
 import Error from 'next/error';
 import Head from 'next/head';
 import { destroyCookie, parseCookies } from 'nookies';
-import { Fragment, useEffect, useState } from 'react';
-import {
-	AiFillCaretDown,
-	AiFillPlusCircle,
-	AiOutlineQuestion,
-} from 'react-icons/ai';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import { AiFillCaretDown, AiOutlineQuestion } from 'react-icons/ai';
 import { BiLogOut, BiPencil, BiUser } from 'react-icons/bi';
+import { FaCrown } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import {
 	api,
@@ -60,8 +59,8 @@ type Props = {
 const Trigger: any = PopoverTrigger;
 
 const Profile: NextPage<Props> = ({ profile, user, games }) => {
+	const ref = useRef<HTMLDivElement>({} as HTMLDivElement);
 	const [isOpen, { toggle: setOpen }] = useBoolean(false);
-	const [isOpenExperience, { toggle: setOpenExperience }] = useBoolean(false);
 	const [isOpenEditProfile, { toggle: setOpenEditProfile }] = useBoolean(false);
 	const {
 		isOpen: isOpenPhoto,
@@ -74,6 +73,15 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 		profile ? decodeBody(profile) : null
 	);
 	const [data, setData] = useState<User | null>(user ? decodeBody(user) : null);
+	const [isBeta, setBeta] = useState(
+		moment(data?.createdAt).isBefore(moment('2022/05/19'))
+	);
+	const [isFollowing, setFollowing] = useState<boolean>(
+		prof ? prof.followers.includes(data ? data.id : '') : false
+	);
+	const [follow, setFollow] = useState<boolean>(
+		prof && data ? prof.following.includes(data.id) : false
+	);
 	useEffect(() => {
 		setMenu(true);
 	}, []);
@@ -83,7 +91,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 	const interestsGames: Games[] = gamesData.filter((game) =>
 		prof?.interests.includes(game.name)
 	);
-	prof.experiences = prof.experiences?.sort((a, b) => {
+	prof.experiences = prof?.experiences?.sort((a, b) => {
 		const aStartDate = new Date(a.startDate).getTime();
 		const bStartDate = new Date(b.startDate).getTime();
 		const aEndDate = (a.endDate ? new Date(a.endDate) : new Date()).getTime();
@@ -93,6 +101,9 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 		}
 		return bEndDate - aEndDate;
 	});
+	prof.trophies = prof?.trophies?.sort(
+		(a, b) => Number(b.year) - Number(a.year)
+	);
 	const changePassword = async () => {
 		try {
 			await api(`/users/change-password?email=${data?.email}`).get('');
@@ -116,29 +127,35 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 		}
 	};
 	const isSelf = data?.email == prof?.email;
+	if (!menu) return <></>;
 	return (
 		<Fragment>
 			<Head>
 				<title>Playout{prof?.username ? ` | ${prof.username}` : ''}</title>
-				<meta
-					property="og:title"
-					content={`Playout${prof?.username ? ` | ${prof.username}` : ''}`}
-				/>
-				<meta
-					property="twitter:title"
-					content={`Playout${prof?.username ? ` | ${prof.username}` : ''}`}
-				/>
-				{data && (
+				{prof && (
 					<Fragment>
+						<meta
+							property="og:title"
+							content={`Playout${prof?.username ? ` | ${prof.username}` : ''}`}
+						/>
+						<meta
+							property="twitter:title"
+							content={`Playout${prof?.username ? ` | ${prof.username}` : ''}`}
+						/>
 						<meta name="description" content={prof.description} />
-						<meta property="og:site_name" content="Playout" />
-						<meta property="og:image" content={prof.thumbnail} />
 						<meta property="og:image:width" content="480" />
 						<meta property="og:image:height" content="360" />
 						<meta property="og:description" content={prof.description} />
 						<meta property="twitter:image" content={prof.thumbnail} />
 						<meta property="twitter:description" content={prof.description} />
 						<meta property="og:site_name" content="Playout" />
+						<meta property="og:image" content={prof.thumbnail} />
+						<meta property="og:description" content="" />
+						<meta
+							property="og:url"
+							content={`https://playout.network/${prof.thumbnail}`}
+						/>
+						<meta property="og:type" content="website" />
 					</Fragment>
 				)}
 			</Head>
@@ -152,7 +169,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 					{!data && (
 						<Text
 							cursor="pointer"
-							onClick={(e: any) => window.location.replace('/')}
+							onClick={(e: any) => (window.location.href = '/')}
 						>
 							Entre ou crie sua conta
 						</Text>
@@ -218,7 +235,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 					{!isSelf && data && (
 						<Avatar
 							cursor="pointer"
-							onClick={(e: any) => window.location.replace(`/${data.username}`)}
+							onClick={(e: any) => (window.location.href = `/${data.username}`)}
 							title={data.username}
 							size="sm"
 							name={data.fullName}
@@ -254,7 +271,7 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						justify="flex-start"
 						align="flex-start"
 					>
-						<HStack w="fit-content" css={{ gap: '1.8rem' }}>
+						<HStack w="100%" css={{ gap: '1.8rem' }}>
 							<Avatar
 								_hover={{ cursor: 'zoom-in', transform: 'scale(1.1)' }}
 								transform={isOpenPhoto ? 'scale(1.1)' : 'scale(1)'}
@@ -277,8 +294,53 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 									/>
 								</ModalContent>
 							</Modal>
-							<VStack spacing={0} align="flex-start">
-								<Text fontSize="2xl">{prof?.fullName}</Text>
+							<VStack w="100%" spacing={2} align="flex-start">
+								<HStack
+									align="center"
+									wrap="wrap"
+									gap={4}
+									w="100%"
+									justify="space-between"
+								>
+									<Text
+										display="inline-flex"
+										alignItems="center"
+										gap={2}
+										fontSize="2xl"
+									>
+										{prof?.fullName.split(' ')[0]}{' '}
+										{isBeta && (
+											<Box
+												className="icon-crown-beta"
+												_hover={{ transform: 'scale(1.2)' }}
+												transition="all 300ms ease-in-out"
+												margin="0 0.5rem"
+												as="span"
+											>
+												<FaCrown
+													title="Este usuário participou da versão pré-beta"
+													size={18}
+												/>
+											</Box>
+										)}
+									</Text>
+									{!isSelf && data && (
+										<HStack gap={4} align="center" justify="flex-end">
+											{follow && (
+												<Text mt={1} color="gray.500" fontSize="small">
+													Segue você
+												</Text>
+											)}
+											<FollowButton
+												data={data}
+												prof={prof}
+												isFollowing={isFollowing}
+												setFollowing={setFollowing}
+												follow={follow}
+											/>
+										</HStack>
+									)}
+								</HStack>
 								<Text fontSize="sm">
 									@{prof?.username} - {prof?.address?.city} -{' '}
 									{prof?.address?.province}
@@ -286,63 +348,75 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 							</VStack>
 						</HStack>
 						<Text css={{ padding: '0.5rem 0' }}>{prof?.description}</Text>
+						<HStack gap={5}>
+							<Text fontSize="small">
+								<b>Seguindo: </b>
+								{prof.following.length}
+							</Text>
+							<Text fontSize="small">
+								<b>Seguidores: </b>
+								{prof.followers.length}
+							</Text>
+						</HStack>
 					</VStack>
 				</HStack>
-				<VStack padding="0.5rem 0" spacing={2} align="flex-start" w="100%">
-					<HStack
-						w="100%"
-						justify="space-between"
-						padding="2rem 0"
-						align="center"
-					>
-						<Text fontSize="2xl">Experiências profissionais</Text>
-						{isSelf && (
-							<Button
-								display="flex"
-								justifyContent="center"
-								alignItems="center"
-								css={{ gap: '0.5rem' }}
-								w="fit-content"
-								color="black"
-								onClick={setOpenExperience}
-								backgroundColor="primary.main"
-								leftIcon={<AiFillPlusCircle />}
-								_hover={{ backgroundColor: 'primary.hover' }}
-								_active={{ backgroundColor: 'primary.hover' }}
-								_focus={{ backgroundColor: 'primary.hover' }}
-							>
-								Adicionar
-							</Button>
-						)}
-					</HStack>
-					{(!prof?.experiences || prof?.experiences.length == 0) && (
-						<Text fontSize="sm" color="gray.500">
-							Não possui experiências profissionais
-						</Text>
-					)}
-					{prof?.experiences && (
+				{data && isSelf && (
+					<>
 						<VStack
-							align="flex-start"
+							as="details"
+							py={4}
+							justify="flex-start"
+							align="start"
 							w="100%"
-							spacing={6}
-							divider={<StackDivider borderColor="gray.200" />}
 						>
-							{prof?.experiences.map((experience) => {
-								return (
-									<ExperienceCard
-										isSelf={isSelf}
-										games={gamesData}
-										key={
-											experience.jobTitle + experience.company + experience.id
-										}
-										experience={experience}
-									/>
-								);
-							})}
+							<Text
+								cursor="pointer"
+								as="summary"
+								fontSize="xl"
+								fontWeight="bold"
+							>
+								Sugestões
+							</Text>
+							<HStack
+								w="100%"
+								css={{ gap: '2rem' }}
+								justify="flex-start"
+								align="flex-start"
+								position="relative"
+								py={data.suggestions.length === 0 ? 0 : 4}
+								px={data.suggestions.length === 0 ? 0 : 2}
+							>
+								{data.suggestions.length === 0 && (
+									<Text fontSize="sm" color="gray.500">
+										Não há sugestões para você, adicione um jogo como interesse.
+									</Text>
+								)}
+								{data.suggestions.map((suggestion) => {
+									return (
+										<CardSuggestion
+											key={suggestion.id}
+											data={data}
+											prof={suggestion}
+										/>
+									);
+								})}
+							</HStack>
 						</VStack>
-					)}
-				</VStack>
-				<VStack padding="2rem 0" spacing={2} align="flex-start" w="100%">
+					</>
+				)}
+				<ExperienceContainer
+					gamesData={gamesData}
+					isSelf={isSelf}
+					prof={prof}
+				/>
+				<TrophiesContainer isSelf={isSelf} prof={prof} />
+				<VStack
+					ref={ref}
+					padding="2rem 0"
+					spacing={2}
+					align="flex-start"
+					w="100%"
+				>
 					<Text fontSize="2xl">Interesses</Text>
 					{(!prof?.interests || prof?.interests.length == 0) && (
 						<Text fontSize="sm" color="gray.500">
@@ -350,72 +424,64 @@ const Profile: NextPage<Props> = ({ profile, user, games }) => {
 						</Text>
 					)}
 					<HStack
-						w="100%"
 						css={{ gap: '0.8rem' }}
 						justify="flex-start"
 						align="flex-start"
-						wrap="wrap"
+						w="100%"
+						maxW={`${ref.current.offsetWidth - 50}px`}
+						whiteSpace="nowrap"
+						overflowX="auto"
+						position="relative"
+						overflowY="hidden"
+						margin="0 auto"
+						py={interestsGames.length === 0 ? 0 : 4}
+						px={interestsGames.length === 0 ? 0 : 2}
 					>
 						{interestsGames.map((game) => {
 							return (
-								<Popover key={game.name}>
-									<Trigger>
-										<Avatar
-											_hover={{
-												transform: 'scale(1.2)',
-												borderColor: 'primary.main',
-												borderWidth: '1px',
-												borderStroke: 'solid',
-											}}
-											_active={{ transform: 'scale(1.2)' }}
-											title={game.name}
-											cursor="pointer"
-											src={game.thumbnail}
-											name={game.name}
-										/>
-									</Trigger>
-									<PopoverContent>
-										<PopoverCloseButton />
-										<PopoverHeader>
-											<Text fontSize="md">{game.name}</Text>
-											<Text fontSize="smaller">{game.publisher}</Text>
-										</PopoverHeader>
-										<PopoverBody>
-											<Text fontSize="smaller">{game.genre}</Text>
-											<Text fontSize="smaller">{game.releaseDate}</Text>
-										</PopoverBody>
-									</PopoverContent>
-								</Popover>
+								<Box key={game.name}>
+									<Avatar
+										_hover={{
+											transform: 'scale(1.2)',
+											borderColor: 'primary.main',
+											borderWidth: '1px',
+											borderStroke: 'solid',
+										}}
+										_active={{ transform: 'scale(1.2)' }}
+										title={game.name}
+										cursor="pointer"
+										src={game.thumbnail}
+										name={game.name}
+									/>
+								</Box>
 							);
 						})}
 					</HStack>
 				</VStack>
-				<ModalExperience
-					games={gamesData}
-					isOpen={isOpenExperience}
-					onClose={setOpenExperience}
-				/>
-				{data && (
-					<Modal
-						isCentered
-						isOpen={isOpenEditProfile}
-						onClose={setOpenEditProfile}
-					>
-						<ModalOverlay backgroundColor="blackAlpha.800" />
-						<ModalContent
-							h="600px"
-							overflowY="auto"
-							borderWidth="1px"
-							borderColor="primary.main"
-							p={4}
+				{data && menu && (
+					<Fragment>
+						<Modal
+							isCentered
+							isOpen={isOpenEditProfile}
+							onClose={setOpenEditProfile}
 						>
-							<UserEditor
-								games={gamesData}
-								fullName={data?.fullName!}
-								edit={data!}
-							/>
-						</ModalContent>
-					</Modal>
+							<ModalOverlay backgroundColor="blackAlpha.800" />
+							<ModalCloseButton />
+							<ModalContent
+								h="600px"
+								overflowY="auto"
+								borderWidth="1px"
+								borderColor="primary.main"
+								p={4}
+							>
+								<UserEditor
+									games={gamesData}
+									fullName={data?.fullName!}
+									edit={data!}
+								/>
+							</ModalContent>
+						</Modal>
+					</Fragment>
 				)}
 			</Main>
 			<Footer />
@@ -442,7 +508,9 @@ Profile.getInitialProps = async (ctx): Promise<Props> => {
 		}
 		if (nextauth) {
 			const response = await api(
-				`/users?token=${encodeURI(decodeKeyAuthorization(nextauth))}`
+				`/users?token=${encodeURI(
+					decodeKeyAuthorization(nextauth)
+				)}&need_suggest=1`
 			).get('');
 			user = response.data;
 		}

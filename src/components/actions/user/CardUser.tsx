@@ -6,20 +6,19 @@ type Props = {
 	user: User;
 };
 
-export const CardUser: FC<Props> = ({ user }) => {
+const CardUser: FC<Props> = ({ user }) => {
 	return (
 		<HStack
+			cursor="pointer"
+			_hover={{ backgroundColor: 'gray.900' }}
 			justify="flex-start"
 			align="center"
-			_hover={{
-				backgroundColor: 'gray.800',
-				cursor: 'pointer',
-				borderRadius: '20px',
-			}}
+			backgroundColor="gray.800"
+			borderRadius="15px"
+			p={6}
 			w="100%"
-			padding={5}
 			gap={10}
-			onClick={(e: any) => window.location.replace(`/${user.username}`)}
+			onClick={(e: any) => (window.location.href = `/${user.username}`)}
 		>
 			<Avatar src={user.thumbnail} name={user.fullName} size="xl" />
 			<VStack spacing={-2} align="flex-start">
@@ -34,3 +33,5 @@ export const CardUser: FC<Props> = ({ user }) => {
 		</HStack>
 	);
 };
+
+export default CardUser;

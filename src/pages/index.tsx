@@ -1,5 +1,5 @@
-import { HStack } from '@chakra-ui/react';
-import { Footer, Header, Main } from 'components/layout';
+import { Box, HStack } from '@chakra-ui/react';
+import { Footer, Main } from 'components/layout';
 import { Description, Sign } from 'components/pages/home';
 import { removeCookies } from 'cookies-next';
 import { NextPage } from 'next';
@@ -13,7 +13,7 @@ const Home: NextPage = () => {
 			<Head>
 				<title>Playout | entre ou cadastre-se</title>
 			</Head>
-			<Header />
+			<Box backgroundColor="transparent" padding="2rem 0.3rem"></Box>
 			<Main>
 				<HStack
 					css={{ gap: '4rem' }}

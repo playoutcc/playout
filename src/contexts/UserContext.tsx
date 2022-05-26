@@ -1,4 +1,5 @@
 import { useBoolean, useToast } from '@chakra-ui/react';
+import { AxiosError } from 'axios';
 import { removeCookies } from 'cookies-next';
 import { setCookie } from 'nookies';
 import { createContext, FC, PropsWithChildren, useContext } from 'react';
@@ -23,7 +24,7 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
 			}, 1000);
 		}).then(() => {
 			setTimeout(() => {
-				window.location.replace('/');
+				window.location.href = '/';
 			}, 2000);
 			toast({
 				title: 'Saindo da conta...',
@@ -44,7 +45,7 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
 				maxAge: connected ? 2147483647 : undefined,
 			});
 			setTimeout(() => {
-				window.location.replace('/feed');
+				window.location.href = '/feed';
 			}, 1500);
 			toast({
 				title: 'Você será redirecionado em breve',
@@ -54,8 +55,22 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
 				position: 'top-right',
 			});
 		} catch (err) {
+			if (err instanceof AxiosError) {
+				if (err.response?.status === 403) {
+					toast({
+						title: 'Usuário não existe ou senha incorreta',
+						status: 'error',
+						duration: 2500,
+						isClosable: true,
+						position: 'top-right',
+					});
+					setPending();
+					return;
+				}
+			}
 			toast({
-				title: 'Usuário não existe ou senha incorreta',
+				title: 'Houve um erro de servidor',
+				description: 'Tente novamente mais tarde',
 				status: 'error',
 				duration: 2500,
 				isClosable: true,
